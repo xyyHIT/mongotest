@@ -31,6 +31,7 @@ app.get('/mongodb/getCollectionDocCount', MongDB.getCollectionDocCount);
 app.get('/test/async_waterfall', MongDB.async_waterfall);
 app.get('/test/async_map', MongDB.async_map);
 app.get('/test/changeRandomData', MongDB.changeRandomData);
+app.get('/test/updateSelfColumn', MongDB.updateSelfColumn);
 app.post(/^\/mongodb\/(\S+)/, MongDB.index);
 
 var port = setting.web_port || 80;

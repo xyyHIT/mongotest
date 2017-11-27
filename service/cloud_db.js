@@ -82,6 +82,17 @@ function connect_cloud_db() {
                     cb({});
             });
         };
+        
+        exports.update_self_column = function (collectionName, cb) {
+            var collection = db.collection(collectionName);
+            collection.findAndModify({check: null}, [["_id",1]], {$set:{check:1}}, {new:true},{upsert:true}, function (err, result) {
+                if (!err) {
+                    cb({record: result});
+                } else {
+                    cb({});
+                }
+            })
+        }
 
         function getNowFormatDate() {
             var date = new Date();

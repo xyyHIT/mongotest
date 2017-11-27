@@ -24,6 +24,6 @@ module.exports = {
     },
     mongodb_cloud_db: {
         //url: "mongodb://127.0.0.1:27001/TS_Cloud_DB"
-        "url": "mongodb://mongodb_test_1:27000/TS_Cloud_DB"
+        url: "mongodb://mongodb_test_1:27000/TS_Cloud_DB"
     }
 };

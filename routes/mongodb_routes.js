@@ -70,6 +70,17 @@ exports.changeRandomData = function (req, res) {
 
 };
 
+exports.updateSelfColumn = function (req, res) {
+    cloud_db.update_self_column('Table_6140_59c547da237cf172f9dc3a2a', function (result) {
+        if (result) {
+            console.log(result.record.value._id);
+            res.send(result);
+        } else {
+            console.log('result is null');
+        }
+    })
+}
+
 exports.getCollectionDocCount = function (req, res) {
     var collectionName = req.query.name;
     cloud_db.get_collection_doc_count(collectionName, function (result) {

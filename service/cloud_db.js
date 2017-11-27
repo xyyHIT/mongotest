@@ -85,7 +85,7 @@ function connect_cloud_db() {
         
         exports.update_self_column = function (collectionName, cb) {
             var collection = db.collection(collectionName);
-            collection.findOneAndUpdate({check: null}, {$set:{check:1}}, {upsert:true, returnNewDocument : true}, function (err, result) {
+            collection.findOneAndUpdate({check: 1}, {$set:{check:0}}, {sort:{_id: 1}, upsert:true, returnNewDocument : true}, function (err, result) {
                 if (!err) {
                     cb({record: result});
                 } else {

@@ -6,14 +6,10 @@ var fs = require('fs');
 var path = require('path');
 var mongoose = require('mongoose');
 var logger = require('log4js').getLogger("MongoDB");
+const setting = require("../setting");
 
-var options = {
-    db_host: "127.0.0.1",
-    db_port: 27002,
-    db_name: "TS_Cloud_DB"
-};
 
-var dbURL = "mongodb://" + options.db_host + ":" + options.db_port + "/" + options.db_name;
+var dbURL = setting.mongodb_cloud_db.url;
 mongoose.connect(dbURL);
 
 mongoose.connection.on('connected', function (err) {

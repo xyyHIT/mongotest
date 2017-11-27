@@ -1,0 +1,18 @@
+{
+  "Tables": {
+    "tb_name": "String",
+    "tb_createTime": "String",
+    "rela_user": "Array",
+    "user_id": "Number",
+    "tb_row_size": "Number",
+    "tb_sign_del": "Boolean"
+  },
+  "Columns": {
+    "col_name": "String",
+    "col_PrimaryKey": "Boolean",
+    "tb_id": "String",
+    "col_displayName": "String",
+    "col_sort": "Number",
+    "col_version": "Number"
+  }
+}

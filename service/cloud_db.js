@@ -10,7 +10,7 @@ var ObjectID = mongodb.ObjectID;
 
 
 function connect_user_db() {
-    MongoClient.connect(setting.mongodb_host.url+"/user", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
+    MongoClient.connect(setting.mongodb_host.url+"/user?w=1", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
         assert.equal(null, err);
 
         exports.create_user = function (json, cb) {
@@ -27,7 +27,7 @@ function connect_user_db() {
 }
 
 function connect_admin_db() {
-    MongoClient.connect(setting.mongodb_host.url+"/admin", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
+    MongoClient.connect(setting.mongodb_host.url+"/admin?w=1", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
         assert.equal(null, err);
 
         exports.runCommand = function (command, cb) {
@@ -37,7 +37,7 @@ function connect_admin_db() {
 }
 
 function connect_cloud_db() {
-    MongoClient.connect(setting.mongodb_host.url+"/TS_Cloud_DB", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
+    MongoClient.connect(setting.mongodb_host.url+"/TS_Cloud_DB?w=1", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
         assert.equal(null, err);
 
         exports.get_all_tables = function (cb) {

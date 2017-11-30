@@ -1,13 +1,6 @@
 var util = require('util');
 var logger = require('log4js').getLogger("MongoDB");
 
-var Columns_Service = require('../service/Columns_Service.js');
-var Tables_Service = require('../service/Tables_Service.js');
-var DataRow_Service = require('../service/DataRow_Service.js');
-var DataView_Service = require('../service/DataView_Service.js');
-var Storage_Service = require('../service/Storage_Service.js');
-var SpaceSize_Service = require('../service/SpaceSize_Service.js');
-var User_Service = require('../service/User_Service');
 var cloud_db = require("../service/cloud_db.js");
 var async = require("async");
 global.TABLES = [];
@@ -99,17 +92,6 @@ exports.createUser = function (req, res) {
     cloud_db.create_user(json, function (result) {
         res.send(result);
     })
-};
-
-exports.createUserService = function (req, res) {
-    var name = req.query.name;
-    var mobile = req.query.mobile;
-    var user = {
-        name: name, mobile: mobile, age: 12
-    };
-    new User_Service().create_user(user, function (result) {
-        res.json(result);
-    });
 };
 
 /**

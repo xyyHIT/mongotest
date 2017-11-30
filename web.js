@@ -26,7 +26,6 @@ var MongDB = require('./routes/mongodb_routes.js');
 
 app.get('/mongodb/getAllTables', MongDB.getAllTables);
 app.get('/mongodb/createUser', MongDB.createUser);
-app.get('/mongodb/createUserService', MongDB.createUserService);
 app.get('/mongodb/getCollectionDocCount', MongDB.getCollectionDocCount);
 app.get('/test/async_waterfall', MongDB.async_waterfall);
 app.get('/test/async_map', MongDB.async_map);

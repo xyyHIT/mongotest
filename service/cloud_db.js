@@ -10,7 +10,7 @@ var ObjectID = mongodb.ObjectID;
 
 
 function connect_user_db() {
-    MongoClient.connect(setting.mongodb_user.url, { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
+    MongoClient.connect(setting.mongodb_host.url+"/user", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
         assert.equal(null, err);
 
         exports.create_user = function (json, cb) {
@@ -26,8 +26,18 @@ function connect_user_db() {
     });
 }
 
+function connect_admin_db() {
+    MongoClient.connect(setting.mongodb_host.url+"/admin", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
+        assert.equal(null, err);
+
+        exports.runCommand = function (command, cb) {
+            var adminDB = db.admi();
+        }
+    })
+}
+
 function connect_cloud_db() {
-    MongoClient.connect(setting.mongodb_cloud_db.url, { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
+    MongoClient.connect(setting.mongodb_host.url+"/TS_Cloud_DB", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
         assert.equal(null, err);
 
         exports.get_all_tables = function (cb) {
@@ -92,7 +102,7 @@ function connect_cloud_db() {
                     cb({});
                 }
             })
-        }
+        };
 
         function getNowFormatDate() {
             var date = new Date();

@@ -18,12 +18,8 @@ module.exports = {
     },
     debug: true,
 
-    mongodb_user: {
-        //url: "mongodb://127.0.0.1:27003/user"
-        url: "mongodb://mongodb_test_1:27000/user"
-    },
-    mongodb_cloud_db: {
-        //url: "mongodb://127.0.0.1:27001/TS_Cloud_DB"
-        url: "mongodb://mongodb_test_1:27000/TS_Cloud_DB"
+    mongodb_host: {
+        //url : "mongodb://mongodb_test_1:27000"
+        url : "mongodb://10.44.68.92:20000,10.170.10.238:20000,10.24.146.46:20000"
     }
 };

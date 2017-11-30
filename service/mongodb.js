@@ -9,7 +9,7 @@ var logger = require('log4js').getLogger("MongoDB");
 const setting = require("../setting");
 
 
-var dbURL = setting.mongodb_cloud_db.url;
+var dbURL = setting.mongodb_host.url+"/user?w=1";
 mongoose.connect(dbURL);
 
 mongoose.connection.on('connected', function (err) {

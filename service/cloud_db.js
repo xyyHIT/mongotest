@@ -30,17 +30,24 @@ function connect_admin_db() {
     MongoClient.connect(setting.mongodb_host.url+"/admin?w=1", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
         assert.equal(null, err);
 
-        exports.runCommand = function (command, cb) {
-            var adminDB = db.admi();
+        exports.runCommand = function (collectionName, cb) {
+            var command = { shardcollection : "TS_Cloud_DB."+collectionName,key : {ts_user_id:1, ts_table_id:1}};
+            db.command(command, function (err, info) {
+                if (!err) {
+                    cb({result: info});
+                } else {
+                    cb({result: 0});
+                }
+            });
         }
-    })
+    });
 }
 
 function connect_cloud_db() {
     MongoClient.connect(setting.mongodb_host.url+"/TS_Cloud_DB?w=1", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
         assert.equal(null, err);
 
-        exports.get_all_tables = function (cb) {
+        exports.get_all_table_names = function (cb) {
             var tableNames = [];
             var collection = db.collection('Tables');
             collection.find({},{user_id:1, _id:1}).sort({user_id:1}).toArray(function (err, allCollection) {
@@ -56,6 +63,28 @@ function connect_cloud_db() {
                     json = tableNames;
                 }
                 cb(json);
+            });
+        };
+
+        exports.get_all_tables = function (cb) {
+            var collection = db.collection('Tables');
+            collection.find({},{fields:{user_id:1, _id:1, rela_user:1}}).sort({user_id:1}).toArray(function (err, allCollection) {
+                if (err) {
+                    cb({tables: []});
+                } else {
+                    cb({tables: allCollection});
+                }
+            });
+        };
+
+        exports.collection_is_exsist = function (collectionName, cb) {
+            var collection = db.collection(collectionName);
+            collection.find({}, {_id:1}).sort({_id:1}).toArray(function (err, docs) {
+                if (docs && docs.length > 0) {
+                    cb({isExsist: true});
+                } else {
+                    cb({isExsist: false})
+                }
             });
         };
 
@@ -103,6 +132,33 @@ function connect_cloud_db() {
                 }
             })
         };
+
+        exports.transferTableData = function (collectionName, cb) {
+            var collection = db.collection(collectionName);
+            var tmp = collectionName.split("_");
+            var ts_user_id = tmp[1];
+            var ts_table_id = tmp[2];
+            collection.update({}, {$set:{ts_user_id:ts_user_id, ts_table_id:ts_table_id}}, {w:1, multi:true}, function (err, number) {
+                if (!err) {
+                    cb({num: number});
+                } else {
+                    cb({num: 0});
+                }
+            });
+
+        };
+
+        exports.createTableIndex = function (collectionName, cb) {
+            var collection = db.collection(collectionName);
+            var options = {background:true,w:1};
+            collection.createIndex({ts_user_id:1, ts_table_id: 1}, options, function (err, indexName) {
+                if (!err) {
+                    cb({num: indexName});
+                } else {
+                    cb({num: 0});
+                }
+            });
+        }
 
         function getNowFormatDate() {
             var date = new Date();

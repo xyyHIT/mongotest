@@ -31,7 +31,8 @@ function connect_admin_db() {
         assert.equal(null, err);
 
         exports.runCommand = function (collectionName, cb) {
-            var command = { shardcollection : "TS_Cloud_DB."+collectionName,key : {ts_user_id:1, ts_table_id:1}};
+            var command = { shardCollection : "TS_Cloud_DB."+collectionName,key : {ts_user_id:1, ts_table_id:1}};
+            console.log("command == "+ command);
             db.command(command, function (err, info) {
                 if (!err) {
                     cb({result: info});

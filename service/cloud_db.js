@@ -39,7 +39,17 @@ function connect_admin_db() {
                     cb({result: 0});
                 }
             });
-        }
+        };
+
+        exports.adminRunCommand = function (command, cb) {
+            db.command(command, function (err, info) {
+                if (!err) {
+                    cb({result: info});
+                } else {
+                    cb({result: 0});
+                }
+            });
+        };
     });
 }
 

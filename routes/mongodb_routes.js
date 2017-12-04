@@ -102,6 +102,14 @@ exports.ensureSharding = function (req, res) {
     res.send(index);
 };
 
+exports.adminRunCommand = function (req, res) {
+    var command = { enablesharding :"TS_Cloud_DB"};
+    cloud_db.adminRunCommand(command, function (result) {
+        cosole.log(result.result);
+        res.send('success');
+    });
+};
+
 exports.changeRandomData = function (req, res) {
     async.series([
         function (callback) {

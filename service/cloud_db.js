@@ -191,3 +191,4 @@ function connect_cloud_db() {
 }
 connect_user_db();
 connect_cloud_db();
+connect_admin_db();

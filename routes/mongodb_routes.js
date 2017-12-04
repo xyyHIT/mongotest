@@ -105,7 +105,7 @@ exports.ensureSharding = function (req, res) {
 exports.adminRunCommand = function (req, res) {
     var command = { enablesharding :"TS_Cloud_DB"};
     cloud_db.adminRunCommand(command, function (result) {
-        cosole.log(result.result);
+        console.log(result.result);
         res.send('success');
     });
 };

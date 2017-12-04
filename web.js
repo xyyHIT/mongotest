@@ -31,10 +31,11 @@ app.get('/test/async_waterfall', MongDB.async_waterfall);
 app.get('/test/async_map', MongDB.async_map);
 app.get('/test/changeRandomData', MongDB.changeRandomData);
 app.get('/test/updateSelfColumn', MongDB.updateSelfColumn);
-app.get('/test/getAllUserTables', MongDB.getAllUserTables);
 app.get('/test/check', MongDB.checkCollectionExsist);
+app.get('/test/getAllUserTables', MongDB.getAllUserTables);
 app.get('/test/transferTableData', MongDB.transferTableData);
 app.get('/test/createTableIndex', MongDB.createTableIndex);
+app.get('/test/ensureSharding', MongDB.ensureSharding);
 
 
 app.post(/^\/mongodb\/(\S+)/, MongDB.index);

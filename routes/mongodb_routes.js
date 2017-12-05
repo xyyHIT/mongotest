@@ -62,7 +62,7 @@ exports.getAllUserTables = function (req, res) {
 
 exports.transferTableData = function (req, res) {
     var index = 0;
-    async.eachLimit(global.TABLES, 10, function (tableObj, callback) {
+    async.eachLimit(global.TABLES, 5, function (tableObj, callback) {
         index++;
         cloud_db.transferTableData(tableObj, function (result) {
             console.log('update ===>' + result.num);
@@ -76,7 +76,7 @@ exports.transferTableData = function (req, res) {
 
 exports.createTableIndex = function (req, res) {
     var index = 0;
-    async.eachLimit(global.TABLES, 10, function (tableObj, callback) {
+    async.eachLimit(global.TABLES, 5, function (tableObj, callback) {
         index++;
         cloud_db.createTableIndex(tableObj, function (result) {
             console.log('current:'+index+" createIndex ===>" + result.num);
@@ -90,7 +90,7 @@ exports.createTableIndex = function (req, res) {
 
 exports.ensureSharding = function (req, res) {
     var index = 0;
-    async.eachLimit(global.TABLES, 10, function (tableObj, callback) {
+    async.eachLimit(global.TABLES, 5, function (tableObj, callback) {
         index++;
         cloud_db.runCommand(tableObj, function (result) {
             console.log('current:'+index+" shardcollection ===>"+result.result);

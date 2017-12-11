@@ -53,7 +53,7 @@ function connect_admin_db() {
 }
 
 function connect_cloud_db() {
-    MongoClient.connect(setting.mongodb_host_rs.url+"/TS_Cloud_DB?w=1", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
+    MongoClient.connect(setting.mongodb_host_sh.url+"/TS_Cloud_DB?w=1", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
         assert.equal(null, err);
 
         exports.get_all_table_names = function (cb) {

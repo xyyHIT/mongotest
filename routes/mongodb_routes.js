@@ -62,10 +62,11 @@ exports.getAllUserTables = function (req, res) {
 
 exports.transferTableData = function (req, res) {
     var index = 0;
+    var total = global.TABLES.length;
     async.eachLimit(global.TABLES, 5, function (tableObj, callback) {
         index++;
         cloud_db.transferTableData(tableObj, function (result) {
-            console.log('update ===>' + result.num);
+            console.log(index+'/'+total+ ' update ===>' + result.num);
             callback(null);
         });
     }, function (err) {
@@ -76,10 +77,11 @@ exports.transferTableData = function (req, res) {
 
 exports.createTableIndex = function (req, res) {
     var index = 0;
+    var total = global.TABLES.length;
     async.eachLimit(global.TABLES, 5, function (tableObj, callback) {
         index++;
         cloud_db.createTableIndex(tableObj, function (result) {
-            console.log('current:'+index+" createIndex ===>" + result.num);
+            console.log(index+'/'+total+" createIndex ===>" + result.num);
             callback(null);
         }, function (err) {
             console.log('共创建索引'+index);
@@ -90,10 +92,11 @@ exports.createTableIndex = function (req, res) {
 
 exports.ensureSharding = function (req, res) {
     var index = 0;
+    var total = global.TABLES.length;
     async.eachLimit(global.TABLES, 5, function (tableObj, callback) {
         index++;
         cloud_db.runCommand(tableObj, function (result) {
-            console.log('current:'+index+" shardcollection ===>"+result.result);
+            console.log(index+'/'+total+" shardcollection ===>"+result.result);
             callback(null);
         }, function (err) {
             console.log('共处理分片集合'+index);

@@ -8,7 +8,7 @@ var ObjectID = mongodb.ObjectID;
 
 
 function connect_user_db() {
-    MongoClient.connect(setting.mongodb_host_rs.url+"/user?w=1", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
+    MongoClient.connect(setting.mongodb_host_sh.url+"/user?w=1", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
         assert.equal(null, err);
 
         exports.create_user = function (json, cb) {

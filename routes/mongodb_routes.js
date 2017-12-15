@@ -10,6 +10,20 @@ exports.index = function (req, res) {
     res.json("this is index");
 };
 
+exports.testConnection = function (req, res) {
+    var MongoClient = require('mongodb').MongoClient;
+// mongodb://user:password@server:port/dbname?replicaSet=replicaSetName 连接的完整格式，副本集不需要写出所有的服务器的列表，只写一部分也是可以使用的，但如果写入部分的服务器出问题了，是否会出现失败，待以后确认
+    var url = 'mongodb://127.0.0.1:27001,127.0.0.1:27002,127.0.0.1:27003/TS_Cloud_DB?replicaSet=testdb';
+    MongoClient.connect(url, { poolSize: 5, autoReconnect: true}, function (err, db) {
+        console.log('error', 'db connect is ok');
+        var collection = db.collection('Tables');
+        console.log('error', 'collection is ok');
+        collection.find({}).toArray(function (err, result) {
+            console.log(err, result);
+        });
+    });
+};
+
 
 exports.getAllTables = function (req, res) {
     cloud_db.get_all_table_names(function (allTables) {

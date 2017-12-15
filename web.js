@@ -37,7 +37,7 @@ app.get('/test/transferTableData', MongDB.transferTableData);
 app.get('/test/createTableIndex', MongDB.createTableIndex);
 app.get('/test/ensureSharding', MongDB.ensureSharding);
 app.get('/test/adminRunCommand', MongDB.adminRunCommand);
-
+app.get('/test/testConnection', MongDB.testConnection);
 
 app.post(/^\/mongodb\/(\S+)/, MongDB.index);
 

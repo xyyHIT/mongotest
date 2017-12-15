@@ -8,7 +8,7 @@ var ObjectID = mongodb.ObjectID;
 
 
 function connect_user_db() {
-    MongoClient.connect(setting.mongodb_host_sh.url+"/user?w=1", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
+    MongoClient.connect(setting.mongodb_host_sh.url+"/user?replicaSet=testdb", { poolSize: 5, autoReconnect: true}, function (err, db) {
         assert.equal(null, err);
 
         exports.create_user = function (json, cb) {
@@ -25,7 +25,7 @@ function connect_user_db() {
 }
 
 function connect_admin_db() {
-    MongoClient.connect(setting.mongodb_host_sh.url+"/admin?w=1", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
+    MongoClient.connect(setting.mongodb_host_sh.url+"/admin?replicaSet=testdb", {poolSize: 5, autoReconnect: true}, function (err, db) {
         assert.equal(null, err);
 
         exports.runCommand = function (collectionName, cb) {
@@ -53,7 +53,7 @@ function connect_admin_db() {
 }
 
 function connect_cloud_db() {
-    MongoClient.connect(setting.mongodb_host_sh.url+"/TS_Cloud_DB?w=1", { server: { poolSize: 5, auto_reconnect: true, autoReconnect: true } }, function (err, db) {
+    MongoClient.connect(setting.mongodb_host_sh.url+"/TS_Cloud_DB?replicaSet=testdb", {poolSize: 5, autoReconnect: true}, function (err, db) {
         assert.equal(null, err);
 
         exports.get_all_table_names = function (cb) {
@@ -130,7 +130,7 @@ function connect_cloud_db() {
                     cb({});
             });
         };
-        
+
         exports.update_self_column = function (collectionName, cb) {
             var collection = db.collection(collectionName);
             collection.findOneAndUpdate({check: 1}, {$set:{check:0}}, {sort:{_id: 1}, upsert:true, returnNewDocument : true}, function (err, result) {

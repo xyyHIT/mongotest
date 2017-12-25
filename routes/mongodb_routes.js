@@ -56,8 +56,8 @@ exports.getAllUserTables = function (req, res) {
     cloud_db.get_all_tables(function (allTables) {
         console.log("allTables.tables.length==" + allTables.tables.length);
         async.each(allTables.tables, function (tableObj, callback) {
-            var name = 'Table_'+tableObj.user_id+'_'+tableObj._id;
-            global.TABLES.push(name);
+            // var name = 'Table_'+tableObj.user_id+'_'+tableObj._id;
+            // global.TABLES.push(name);
             if (tableObj.rela_user && tableObj.rela_user.length > 0) {
                 async.each(tableObj.rela_user, function (obj, cb) {
                     var name = 'Table_'+obj.user_id+'_'+tableObj._id;
@@ -80,13 +80,13 @@ exports.transferTableData = function (req, res) {
     async.eachLimit(global.TABLES, 5, function (tableObj, callback) {
         index++;
         cloud_db.transferTableData(tableObj, function (result) {
-            console.log(index+'/'+total+ ' update ===>' + result.num);
+            console.log(index+'/'+total+ ' '+tableObj+' update ===>' + result.num);
             callback(null);
         });
     }, function (err) {
         console.log(index);
     });
-    res.send(index);
+    res.send({result:"开始运行，共需要创建"+total+"个"});
 };
 
 exports.createTableIndex = function (req, res) {
@@ -95,13 +95,41 @@ exports.createTableIndex = function (req, res) {
     async.eachLimit(global.TABLES, 5, function (tableObj, callback) {
         index++;
         cloud_db.createTableIndex(tableObj, function (result) {
-            console.log(index+'/'+total+" createIndex ===>" + result.num);
+            console.log(index+'/'+total+' '+tableObj+" createIndex ===>" + result.num);
             callback(null);
         }, function (err) {
             console.log('共创建索引'+index);
         });
     });
-    res.send(index);
+    res.send({result:"开始运行，共需要创建"+total+"个"});
+};
+
+exports.getCollectionIndexes = function (req, res) {
+    var colName = req.query.tb_name;
+    async.waterfall([
+        function (callback) {
+            cloud_db.getTableUniqueIndex(colName, function (queryResult) {
+                console.log(colName + " ===>" +queryResult.result);
+                callback(null, queryResult.result);
+            });
+        },
+        function (indexList, callback) {
+            cloud_db.createShardUniqueIndex(colName, indexList, function (createResult) {
+                if (createResult.ok == 1) {
+                    callback(null, 'create success');
+                } else {
+                    callback(null, 'create error');
+                }
+            })
+        }
+    ],function (err, result) {
+        if (err) {
+            console.log(result);
+        } else {
+
+        }
+    })
+    res.send({ok:1});
 };
 
 exports.ensureSharding = function (req, res) {
@@ -110,13 +138,13 @@ exports.ensureSharding = function (req, res) {
     async.eachLimit(global.TABLES, 5, function (tableObj, callback) {
         index++;
         cloud_db.runCommand(tableObj, function (result) {
-            console.log(index+'/'+total+" shardcollection ===>"+result.result);
+            console.log(index+'/'+total+" shardcollection ===>"+JSON.stringify(result.result));
             callback(null);
         }, function (err) {
             console.log('共处理分片集合'+index);
         });
     });
-    res.send(index);
+    res.send({result:"开始运行，共需要创建"+total+"个"});
 };
 
 exports.adminRunCommand = function (req, res) {

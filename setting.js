@@ -19,10 +19,10 @@ module.exports = {
     debug: true,
 
     mongodb_host_rs: {
-        url : "mongodb://10.24.213.120:27000"
+        url : "mongodb://127.0.0.1:20000"
     },
     mongodb_host_sh : {
         //url : "mongodb://10.170.10.238:27000"
-        url : "mongodb://10.25.203.162:20000,10.26.42.198:20000,10.26.40.75:20000"
+        url : "mongodb://127.0.0.1:20000"
     },
 };

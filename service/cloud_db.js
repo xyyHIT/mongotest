@@ -3,6 +3,7 @@ const setting = require("../setting");
 var mongodb = require('mongodb')
 var MongoClient = mongodb.MongoClient;
 var assert = require('assert');
+var async = require("async");
 
 var ObjectID = mongodb.ObjectID;
 
@@ -30,11 +31,12 @@ function connect_admin_db() {
 
         exports.runCommand = function (collectionName, cb) {
             var command = { shardCollection : "TS_Cloud_DB."+collectionName,key : {ts_user_id:1, ts_table_id:1}};
-            console.log("command == "+ command);
+            console.log("command == "+ JSON.stringify(command));
             db.command(command, function (err, info) {
                 if (!err) {
                     cb({result: info});
                 } else {
+                    console.log("err==> "+JSON.stringify(err));
                     cb({result: 0});
                 }
             });
@@ -147,10 +149,11 @@ function connect_cloud_db() {
             var tmp = collectionName.split("_");
             var ts_user_id = tmp[1];
             var ts_table_id = tmp[2];
-            collection.update({}, {$set:{ts_user_id:ts_user_id, ts_table_id:ts_table_id}}, {w:1, multi:true}, function (err, number) {
+            collection.update({}, {$set:{ts_user_id:ts_user_id, ts_table_id:ts_table_id}}, {multi:true}, function (err, number) {
                 if (!err) {
                     cb({num: number});
                 } else {
+                    console.log("err==> " + JSON.stringify(err));
                     cb({num: 0});
                 }
             });
@@ -159,15 +162,112 @@ function connect_cloud_db() {
 
         exports.createTableIndex = function (collectionName, cb) {
             var collection = db.collection(collectionName);
-            var options = {background:true,w:1};
-            collection.createIndex({ts_user_id:1, ts_table_id: 1}, options, function (err, indexName) {
+            async.series([
+                // 创建分片索引
+                function (cb) {
+                    collection.createIndex({ts_user_id:1, ts_table_id: 1}, {background:true}, function (err, indexName) {
+                        if (!err) {
+                            cb(null, collectionName+' createShardIndexOk  indexName='+indexName);
+                        } else {
+                            console.log("createShardIndexFail err==> "+JSON.stringify(err));
+                            cb(null, collectionName+' createShardIndexFail');
+                        }
+                    })
+                },
+                // 处理原有索引否有唯一索引
+                function (cb) {
+                    async.waterfall([
+                        function (callback) {
+                            exports.getTableUniqueIndex(collectionName, function (queryResult) {
+                                //console.log(collectionName + " ===>" +queryResult.result);
+                                callback(null, queryResult.result);
+                            });
+                        },
+                        function (indexList, callback) {
+                            if (indexList && indexList.length> 0) {
+                                exports.createShardUniqueIndex(collectionName, indexList, function (createResult) {
+                                    if (createResult.ok == 1) {
+                                        callback(null, 'create success');
+                                    } else {
+                                        callback(null, 'create error');
+                                    }
+                                })
+                            } else {
+                                callback(null, 'no unique index');
+                            }
+                        }
+                    ],function (err, result) {
+                        if (err) {
+                            console.log("createUniqueIndexFail err==>"+JSON.stringify(err));
+                            cb(null, collectionName + ' createUniqueIndexFail');
+                        } else {
+                            console.log("createUniqueIndexOk result==>"+result);
+                            cb(null, collectionName + ' createUniqueIndexOk result='+result);
+                        }
+                    })
+                }
+            ], function (err, result) {
                 if (!err) {
-                    cb({num: indexName});
+                    cb({num: 1});
                 } else {
+                    console.log("err==> "+JSON.stringify(err));
                     cb({num: 0});
                 }
             });
-        }
+        };
+
+        exports.createShardUniqueIndex = function (collectionName, indexList, cb) {
+            var collection = db.collection(collectionName);
+            async.each(indexList, function (un_index, callback) {
+                var indexName = un_index.name;
+                collection.dropIndex(indexName, {}, function (error, del_result) {
+                    if (!error) {
+                        console.log(collectionName + "dropIndexOK");
+                        // 删除成功，开始新建索引
+                        var unKey = {ts_user_id:1, ts_table_id:1};
+                        for( var keyObj in un_index.key) {
+                            unKey[keyObj] = 1;
+                        }
+                        collection.createIndex(unKey, {unique: true,background:true}, function (er, indexName) {
+                            if (!er) {
+                                console.log(collectionName + "createIndexOK");
+                                callback(collectionName + "createIndexOK");
+                            } else {
+                                callback(collectionName + "createIndexFail");
+                            }
+                        });
+                    } else {
+                        callback(collectionName + "dropIndexFail");
+                    }
+                });
+            }, function (err) {
+                if (err) {
+                    cb({ok: 0});
+                } else {
+                    cb({ok: 1});
+                }
+            });
+        };
+
+        exports.getTableUniqueIndex = function (collectionName, cb) {
+            var collection = db.collection(collectionName);
+            collection.listIndexes().toArray(function(err, indexes) {
+                if(err) return cb({success:false,msg:err.toString()});
+                if(!Array.isArray(indexes)) return cb({success:true,result:[]});
+                var result = [];
+                for (var i = 0; i < indexes.length; i++) {
+                    var item = indexes[i];
+                    if (item.unique) {
+                        var item_key = item.key;
+                        var key_name = item.name;
+                        if (item_key.ts_user_id == null && item_key.ts_table_id == null) {
+                            result.push({key: item_key, name: key_name});
+                        }
+                    }
+                }
+                cb({success:true,result:result});
+            });
+        };
 
         function getNowFormatDate() {
             var date = new Date();

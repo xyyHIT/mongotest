@@ -163,7 +163,7 @@ function connect_cloud_db() {
 
         exports.createShardIndex = function (collectionInfo, cb) {
             var collection = db.collection(collectionInfo.name);
-            collection.ensureIndex(collectionInfo.shardKey, {background:true}, function (err, indexName) {
+            collection.ensureIndex(collectionInfo.shardKey, function (err, indexName) {
                 if (!err) {
                     console.log(collectionInfo.name+' createShardIndexOk  indexName='+indexName);
                     cb({result: 1});

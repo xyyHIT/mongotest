@@ -163,7 +163,11 @@ exports.shardCollections = function (req, res) {
             function (cb) {
                 if (collectionInfo.shardKey["user_id"] && collectionInfo.shardKey["tb_id"]) {
                     cloud_db.createShardIndex(collectionInfo, function (indexResult) {
-                        cb(null, indexResult.result);
+                        if (indexResult.result == 1) {
+                            cb(null, indexResult.result);
+                        } else {
+                            cb('createShardIndex Fail', indexResult.result);
+                        }
                     })
                 } else {
                     cb(null, 'shardIndexOK');

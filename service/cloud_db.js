@@ -165,9 +165,11 @@ function connect_cloud_db() {
             var collection = db.collection(collectionInfo.name);
             collection.createIndex(collectionInfo.shardKey, {background:true}, function (err, indexName) {
                 if (!err) {
-                    cb({result: collectionInfo.name+' createShardIndexOk  indexName='+indexName});
+                    console.log(collectionInfo.name+' createShardIndexOk  indexName='+indexName);
+                    cb({result: 1});
                 } else {
-                    cb({result: collectionInfo.name+' createShardIndexFail'} );
+                    console.log(collectionInfo.name+' createShardIndexFail ==>'+JSON.stringify(err));
+                    cb({result: 0});
                 }
             });
         };

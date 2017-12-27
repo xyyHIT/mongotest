@@ -163,7 +163,7 @@ function connect_cloud_db() {
 
         exports.createShardIndex = function (collectionInfo, cb) {
             var collection = db.collection(collectionInfo.name);
-            collection.ensureIndex(collectionInfo.shardKey, function (err, indexName) {
+            collection.createIndex(collectionInfo.shardKey, {background:true}, function (err, indexName) {
                 if (!err) {
                     console.log(collectionInfo.name+' createShardIndexOk  indexName='+indexName);
                     cb({result: 1});
@@ -179,7 +179,7 @@ function connect_cloud_db() {
             async.series([
                 // 创建分片索引
                 function (cb) {
-                    collection.ensureIndex({ts_user_id:1, ts_table_id: 1}, {background:true}, function (err, indexName) {
+                    collection.createIndex({ts_user_id:1, ts_table_id: 1}, {background:true}, function (err, indexName) {
                         if (!err) {
                             cb(null, collectionName+' createShardIndexOk  indexName='+indexName);
                         } else {
@@ -242,7 +242,7 @@ function connect_cloud_db() {
                         for( var keyObj in un_index.key) {
                             unKey[keyObj] = 1;
                         }
-                        collection.ensureIndex(unKey, {unique: true,background:true}, function (er, indexName) {
+                        collection.createIndex(unKey, {unique: true,background:true}, function (er, indexName) {
                             if (!er) {
                                 console.log(collectionName + "createIndexOK");
                                 callback(collectionName + "createIndexOK");

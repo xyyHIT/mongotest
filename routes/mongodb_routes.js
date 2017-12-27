@@ -185,12 +185,10 @@ exports.shardCollections = function (req, res) {
         });
     }, function (err) {
         if (err) {
-            console.log(collectionInfo.name + "error");
-        } else {
-            console.log(collectionInfo.name + "success");
+            console.log(JSON.stringify(err));
         }
-        res.send("finish");
-    })
+    });
+    res.send("finish");
 }
 
 exports.adminRunCommand = function (req, res) {

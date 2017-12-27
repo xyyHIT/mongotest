@@ -178,14 +178,17 @@ exports.shardCollections = function (req, res) {
         ], function (error, result) {
             if (error) {
                 console.log('shardCollectionFail ===>'+JSON.stringify(error));
+                callback(collectionInfo.name + " shard OK");
             } else {
                 console.log('shardCollectionOK ===>'+JSON.stringify(result));
+                callback();
             }
-            callback(collectionInfo.name + " shard OK");
         });
     }, function (err) {
         if (err) {
             console.log(JSON.stringify(err));
+        } else {
+            console.log('All tables have been processed successfully');
         }
     });
     res.send("finish");

@@ -160,25 +160,25 @@ exports.shardCollections = function (req, res) {
         ];
     async.eachSeries(collections, function (collectionInfo, callback) {
         async.series([
-            // function (cb) {
-            //     if (collectionInfo.shardKey["user_id"] && collectionInfo.shardKey["tb_id"]) {
-            //         cloud_db.createShardIndex(collectionInfo, function (indexResult) {
-            //             if (indexResult.result == 1) {
-            //                 cb(null, indexResult.result);
-            //             } else {
-            //                 cb('createShardIndex Fail', indexResult.result);
-            //             }
-            //         })
-            //     } else {
-            //         cb(null, 'shardIndexOK');
-            //     }
-            // }
             function (cb) {
-                var command = {shardCollection: collectionInfo.name, key:collectionInfo.shardKey};
-                cloud_db.adminRunCommand(command, function (result) {
-                    cb(null, collectionInfo.name + "shard result ===>" + JSON.stringify(result.result));
-                })
+                if (collectionInfo.shardKey["user_id"] && collectionInfo.shardKey["tb_id"]) {
+                    cloud_db.createShardIndex(collectionInfo, function (indexResult) {
+                        if (indexResult.result == 1) {
+                            cb(null, indexResult.result);
+                        } else {
+                            cb('createShardIndex Fail', indexResult.result);
+                        }
+                    })
+                } else {
+                    cb(null, 'shardIndexOK');
+                }
             }
+            // function (cb) {
+            //     var command = {shardCollection: collectionInfo.name, key:collectionInfo.shardKey};
+            //     cloud_db.adminRunCommand(command, function (result) {
+            //         cb(null, collectionInfo.name + "shard result ===>" + JSON.stringify(result.result));
+            //     })
+            // }
         ], function (error, result) {
             if (error) {
                 console.log('shardCollectionFail ===>'+JSON.stringify(error));

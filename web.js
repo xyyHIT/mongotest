@@ -40,6 +40,7 @@ app.get('/test/getCollectionIndexes', MongDB.getCollectionIndexes);
 app.get('/test/shardCollections', MongDB.shardCollections);
 app.get('/test/adminRunCommand', MongDB.adminRunCommand);
 app.get('/test/testConnection', MongDB.testConnection);
+app.get('/test/createShardIndex', MongDB.createShardIndex);
 
 app.post(/^\/mongodb\/(\S+)/, MongDB.index);
 

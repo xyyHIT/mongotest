@@ -148,6 +148,14 @@ exports.ensureSharding = function (req, res) {
     res.send({result:"开始运行，共需要创建"+total+"个"});
 };
 
+exports.createShardIndex = function (req, res) {
+    var collectionInfo = {name: "TS_Cloud_DB.DataView", shardKey:{user_id:1,tb_id:1}};
+    cloud_db.createShardIndex(collectionInfo, function (result) {
+        console.log("result ===>" + result.result);
+    });
+    res.send("finished");
+};
+
 exports.shardCollections = function (req, res) {
     var collections = [
         {name: "TS_Cloud_DB.Columns", shardKey:{tb_id:1}},

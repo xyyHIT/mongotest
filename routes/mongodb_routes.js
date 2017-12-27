@@ -147,6 +147,30 @@ exports.ensureSharding = function (req, res) {
     res.send({result:"开始运行，共需要创建"+total+"个"});
 };
 
+exports.shardCollections = function (req, res) {
+    var collections = [
+        {name: "TS_Cloud_DB.Columns", shardKey:{tb_id:1}},
+        {name: "TS_Cloud_DB.Tables", shardKey:{user_id:1}},
+        {name: "TS_Cloud_DB.DataView", shardKey:{user_id:1,tb_id:1}},
+        {name: "TS_Cloud_DB.DataRow", shardKey:{user_id:1,tb_id:1}},
+        {name: "TS_Cloud_DB.SpaceSize", shardKey:{user_id:1}},
+        {name: "TS_Cloud_DB.Storage", shardKey:{user_id:1}},
+        {name: "TS_Cloud_DB.Interface", shardKey:{user_id:1,tb_id:1}}
+        ];
+    async.eachSeries(collections, function (collectionInfo, callback) {
+        var command = {shardCollection: collectionInfo.name, key:collectionInfo.shardKey};
+        cloud_db.adminRunCommand(command, function (result) {
+            callback(collectionInfo.name + "shard result ===>" + JSON.stringify(result.result));
+        })
+    }, function (err) {
+        if (err) {
+            console.log("error");
+        } else {
+            console.log("success");
+        }
+    })
+}
+
 exports.adminRunCommand = function (req, res) {
     var command = { enablesharding :"TS_Cloud_DB"};
     cloud_db.adminRunCommand(command, function (result) {

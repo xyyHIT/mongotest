@@ -29,25 +29,26 @@ function connect_admin_db() {
     MongoClient.connect(setting.mongodb_host_sh.url+"/admin", {poolSize: 5, autoReconnect: true}, function (err, db) {
         assert.equal(null, err);
 
-        exports.runCommand = function (collectionName, cb) {
-            var command = { shardCollection : "TS_Cloud_DB."+collectionName,key : {ts_user_id:1, ts_table_id:1}};
+        // exports.runCommand = function (collectionName, cb) {
+        //     var command = { shardCollection : "TS_Cloud_DB."+collectionName,key : {ts_user_id:1, ts_table_id:1}};
+        //     console.log("command == "+ JSON.stringify(command));
+        //     db.command(command, function (err, info) {
+        //         if (!err) {
+        //             cb({result: info});
+        //         } else {
+        //             console.log("err==> "+JSON.stringify(err));
+        //             cb({result: 0});
+        //         }
+        //     });
+        // };
+
+        exports.adminRunCommand = function (command, cb) {
             console.log("command == "+ JSON.stringify(command));
             db.command(command, function (err, info) {
                 if (!err) {
                     cb({result: info});
                 } else {
-                    console.log("err==> "+JSON.stringify(err));
-                    cb({result: 0});
-                }
-            });
-        };
-
-        exports.adminRunCommand = function (command, cb) {
-            db.command(command, function (err, info) {
-                if (!err) {
-                    cb({result: info});
-                } else {
-                    cb({result: 0});
+                    cb({result: err});
                 }
             });
         };
@@ -268,6 +269,12 @@ function connect_cloud_db() {
                 cb({success:true,result:result});
             });
         };
+
+        exports.shardCollection = function (collectionInfo, cb) {
+            var collection = db.collection(collectionInfo.name);
+
+            exports.adminRunCommand()
+        }
 
         function getNowFormatDate() {
             var date = new Date();

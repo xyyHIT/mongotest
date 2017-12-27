@@ -180,13 +180,13 @@ exports.shardCollections = function (req, res) {
                 } else {
                     cb(null, 'shardIndexOK');
                 }
+            },
+            function (cb) {
+                var command = {shardCollection: collectionInfo.name, key:collectionInfo.shardKey};
+                cloud_db.adminRunCommand(command, function (result) {
+                    cb(null, collectionInfo.name + "shard result ===>" + JSON.stringify(result.result));
+                })
             }
-            // function (cb) {
-            //     var command = {shardCollection: collectionInfo.name, key:collectionInfo.shardKey};
-            //     cloud_db.adminRunCommand(command, function (result) {
-            //         cb(null, collectionInfo.name + "shard result ===>" + JSON.stringify(result.result));
-            //     })
-            // }
         ], function (error, result) {
             if (error) {
                 console.log('shardCollectionFail ===>'+JSON.stringify(error));

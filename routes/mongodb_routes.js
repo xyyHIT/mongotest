@@ -158,10 +158,29 @@ exports.shardCollections = function (req, res) {
         {name: "TS_Cloud_DB.Interface", shardKey:{user_id:1,tb_id:1}}
         ];
     async.eachSeries(collections, function (collectionInfo, callback) {
-        var command = {shardCollection: collectionInfo.name, key:collectionInfo.shardKey};
-        cloud_db.adminRunCommand(command, function (result) {
-            callback(collectionInfo.name + "shard result ===>" + JSON.stringify(result.result));
-        })
+        async.series([
+            function (cb) {
+                if (collectionInfo.shardKey["user_id"] && collectionInfo.shardKey["tb_id"]) {
+                    cloud_db.createShardIndex(collectionInfo, function (indexResult) {
+                        cb(null, indexResult.result);
+                    })
+                } else {
+                    cb(null, 'shardIndexOK');
+                }
+            },
+            function (cb) {
+                var command = {shardCollection: collectionInfo.name, key:collectionInfo.shardKey};
+                cloud_db.adminRunCommand(command, function (result) {
+                    cb(null, collectionInfo.name + "shard result ===>" + JSON.stringify(result.result));
+                })
+            }
+        ], function (error, result) {
+            if (error) {
+                callback('shardCollectionFail ===>'+JSON.stringify(result));
+            } else {
+                callback('shardCollectionOK ===>'+JSON.stringify(result));
+            }
+        });
     }, function (err) {
         if (err) {
             console.log("error");

@@ -161,6 +161,17 @@ function connect_cloud_db() {
 
         };
 
+        exports.createShardIndex = function (collectionInfo, cb) {
+            var collection = db.collection(collectionInfo.name);
+            collection.createIndex(collectionInfo.shardKey, {background:true}, function (err, indexName) {
+                if (!err) {
+                    cb({result: collectionInfo.name+' createShardIndexOk  indexName='+indexName});
+                } else {
+                    cb({result: collectionInfo.name+' createShardIndexFail'} );
+                }
+            });
+        };
+
         exports.createTableIndex = function (collectionName, cb) {
             var collection = db.collection(collectionName);
             async.series([
@@ -295,6 +306,6 @@ function connect_cloud_db() {
         }
     });
 }
-connect_user_db();
-connect_cloud_db();
-connect_admin_db();
+//connect_user_db();
+//connect_cloud_db();
+//connect_admin_db();

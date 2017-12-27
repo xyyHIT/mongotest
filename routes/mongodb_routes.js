@@ -137,7 +137,8 @@ exports.ensureSharding = function (req, res) {
     var total = global.TABLES.length;
     async.eachLimit(global.TABLES, 5, function (tableObj, callback) {
         index++;
-        cloud_db.runCommand(tableObj, function (result) {
+        var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {ts_user_id:1, ts_table_id:1}};
+        cloud_db.adminRunCommand(command, function (result) {
             console.log(index+'/'+total+" shardcollection ===>"+JSON.stringify(result.result));
             callback(null);
         }, function (err) {

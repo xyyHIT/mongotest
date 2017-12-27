@@ -177,9 +177,9 @@ exports.shardCollections = function (req, res) {
             }
         ], function (error, result) {
             if (error) {
-                callback('shardCollectionFail ===>'+JSON.stringify(result));
+                console.log('shardCollectionFail ===>'+JSON.stringify(error));
             } else {
-                callback('shardCollectionOK ===>'+JSON.stringify(result));
+                console.log('shardCollectionOK ===>'+JSON.stringify(result));
             }
         });
     }, function (err) {
@@ -188,6 +188,7 @@ exports.shardCollections = function (req, res) {
         } else {
             console.log("success");
         }
+        res.send("finish");
     })
 }
 

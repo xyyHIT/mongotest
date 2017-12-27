@@ -150,12 +150,12 @@ exports.ensureSharding = function (req, res) {
 
 exports.shardCollections = function (req, res) {
     var collections = [
-        {name: "TS_Cloud_DB.Columns", shardKey:{tb_id:1}},
-        {name: "TS_Cloud_DB.Tables", shardKey:{user_id:1}},
+        //{name: "TS_Cloud_DB.Columns", shardKey:{tb_id:1}},
+        //{name: "TS_Cloud_DB.Tables", shardKey:{user_id:1}},
         {name: "TS_Cloud_DB.DataView", shardKey:{user_id:1,tb_id:1}},
         {name: "TS_Cloud_DB.DataRow", shardKey:{user_id:1,tb_id:1}},
-        {name: "TS_Cloud_DB.SpaceSize", shardKey:{user_id:1}},
-        {name: "TS_Cloud_DB.Storage", shardKey:{user_id:1}},
+        //{name: "TS_Cloud_DB.SpaceSize", shardKey:{user_id:1}},
+        //{name: "TS_Cloud_DB.Storage", shardKey:{user_id:1}},
         {name: "TS_Cloud_DB.Interface", shardKey:{user_id:1,tb_id:1}}
         ];
     async.eachSeries(collections, function (collectionInfo, callback) {

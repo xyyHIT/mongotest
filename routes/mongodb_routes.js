@@ -181,12 +181,13 @@ exports.shardCollections = function (req, res) {
             } else {
                 console.log('shardCollectionOK ===>'+JSON.stringify(result));
             }
+            callback(collectionInfo.name + " shard OK");
         });
     }, function (err) {
         if (err) {
-            console.log("error");
+            console.log(collectionInfo.name + "error");
         } else {
-            console.log("success");
+            console.log(collectionInfo.name + "success");
         }
         res.send("finish");
     })

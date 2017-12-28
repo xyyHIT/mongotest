@@ -182,7 +182,7 @@ exports.shardCollections = function (req, res) {
                 }
             },
             function (cb) {
-                var command = {shardCollection: 'TS_Cloud_DB'+collectionInfo.name, key:collectionInfo.shardKey};
+                var command = {shardCollection: 'TS_Cloud_DB.'+collectionInfo.name, key:collectionInfo.shardKey};
                 cloud_db.adminRunCommand(command, function (result) {
                     cb(null, collectionInfo.name + "shard result ===>" + JSON.stringify(result.result));
                 })

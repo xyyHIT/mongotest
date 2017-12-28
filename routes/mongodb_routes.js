@@ -158,13 +158,13 @@ exports.createShardIndex = function (req, res) {
 
 exports.shardCollections = function (req, res) {
     var collections = [
-        {name: "TS_Cloud_DB.Columns", shardKey:{tb_id:1}},
-        {name: "TS_Cloud_DB.Tables", shardKey:{user_id:1}},
-        {name: "TS_Cloud_DB.DataView", shardKey:{user_id:1,tb_id:1}},
-        {name: "TS_Cloud_DB.DataRow", shardKey:{user_id:1,tb_id:1}},
-        {name: "TS_Cloud_DB.SpaceSize", shardKey:{user_id:1}},
-        {name: "TS_Cloud_DB.Storage", shardKey:{user_id:1}},
-        {name: "TS_Cloud_DB.Interface", shardKey:{user_id:1,tb_id:1}}
+        {name: "Columns", shardKey:{tb_id:1}},
+        {name: "Tables", shardKey:{user_id:1}},
+        {name: "DataView", shardKey:{user_id:1,tb_id:1}},
+        {name: "DataRow", shardKey:{user_id:1,tb_id:1}},
+        {name: "SpaceSize", shardKey:{user_id:1}},
+        {name: "Storage", shardKey:{user_id:1}},
+        {name: "Interface", shardKey:{user_id:1,tb_id:1}}
         ];
     async.eachSeries(collections, function (collectionInfo, callback) {
         async.series([
@@ -182,7 +182,7 @@ exports.shardCollections = function (req, res) {
                 }
             },
             function (cb) {
-                var command = {shardCollection: collectionInfo.name, key:collectionInfo.shardKey};
+                var command = {shardCollection: 'TS_Cloud_DB'+collectionInfo.name, key:collectionInfo.shardKey};
                 cloud_db.adminRunCommand(command, function (result) {
                     cb(null, collectionInfo.name + "shard result ===>" + JSON.stringify(result.result));
                 })

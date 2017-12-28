@@ -245,7 +245,7 @@ function connect_cloud_db() {
                         collection.createIndex(unKey, {unique: true,}, function (er, indexName) {
                             if (!er) {
                                 console.log(collectionName + "createIndexOK");
-                                callback(collectionName + "createIndexOK");
+                                callback();
                             } else {
                                 callback(collectionName + "createIndexFail");
                             }

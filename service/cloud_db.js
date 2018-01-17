@@ -148,7 +148,7 @@ function connect_cloud_db() {
         exports.transferTableData = function (collectionName, cb) {
             var collection = db.collection(collectionName);
             var tmp = collectionName.split("_");
-            var ts_user_id = tmp[1];
+            var ts_user_id = parseInt(tmp[1]);
             var ts_table_id = tmp[2];
             collection.update({}, {$set:{ts_user_id:ts_user_id, ts_table_id:ts_table_id}}, {multi:true}, function (err, number) {
                 if (!err) {
@@ -179,7 +179,7 @@ function connect_cloud_db() {
             async.series([
                 // 创建分片索引
                 function (cb) {
-                    collection.createIndex({ts_user_id:1, ts_table_id: 1}, {}, function (err, indexName) {
+                    collection.createIndex({ts_user_id:1, ts_table_id:1}, {}, function (err, indexName) {
                         if (!err) {
                             cb(null, collectionName+' createShardIndexOk  indexName='+indexName);
                         } else {

@@ -77,7 +77,7 @@ exports.getAllUserTables = function (req, res) {
 exports.transferTableData = function (req, res) {
     var index = 0;
     var total = global.TABLES.length;
-    async.eachLimit(global.TABLES, 5, function (tableObj, callback) {
+    async.eachLimit(global.TABLES, 15, function (tableObj, callback) {
         index++;
         cloud_db.transferTableData(tableObj, function (result) {
             console.log(index+'/'+total+ ' '+tableObj+' update ===>' + result.num);
@@ -135,7 +135,7 @@ exports.getCollectionIndexes = function (req, res) {
 exports.ensureSharding = function (req, res) {
     var index = 0;
     var total = global.TABLES.length;
-    async.eachLimit(global.TABLES, 5, function (tableObj, callback) {
+    async.eachLimit(global.TABLES, 50, function (tableObj, callback) {
         index++;
         var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {ts_user_id:1, ts_table_id:1}};
         cloud_db.adminRunCommand(command, function (result) {

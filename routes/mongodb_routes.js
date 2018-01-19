@@ -77,7 +77,7 @@ exports.getAllUserTables = function (req, res) {
 exports.transferTableData = function (req, res) {
     var index = 0;
     var total = global.TABLES.length;
-    async.eachLimit(global.TABLES, 15, function (tableObj, callback) {
+    async.eachLimit(global.TABLES, 30, function (tableObj, callback) {
         index++;
         cloud_db.transferTableData(tableObj, function (result) {
             console.log(index+'/'+total+ ' '+tableObj+' update ===>' + result.num);
@@ -92,7 +92,7 @@ exports.transferTableData = function (req, res) {
 exports.createTableIndex = function (req, res) {
     var index = 0;
     var total = global.TABLES.length;
-    async.eachLimit(global.TABLES, 5, function (tableObj, callback) {
+    async.eachLimit(global.TABLES, 50, function (tableObj, callback) {
         index++;
         cloud_db.createTableIndex(tableObj, function (result) {
             console.log(index+'/'+total+' '+tableObj+" createIndex ===>" + result.num);

@@ -26,7 +26,7 @@ function connect_user_db() {
 }
 
 function connect_admin_db() {
-    MongoClient.connect(setting.mongodb_host.mongodb_admin_url, {poolSize: 5, autoReconnect: true}, function (err, db) {
+    MongoClient.connect(setting.mongodb_host.mongodb_admin_url, {poolSize: 50, autoReconnect: true}, function (err, db) {
         assert.equal(null, err);
 
         // exports.runCommand = function (collectionName, cb) {
@@ -46,9 +46,9 @@ function connect_admin_db() {
             console.log("command == "+ JSON.stringify(command));
             db.command(command, function (err, info) {
                 if (!err) {
-                    cb({result: info});
-                } else {
                     cb({result: err});
+                } else {
+                    cb({result: info});
                 }
             });
         };
@@ -56,7 +56,7 @@ function connect_admin_db() {
 }
 
 function connect_cloud_db() {
-    MongoClient.connect(setting.mongodb_host.mongodb_cloud_url, {poolSize: 5, autoReconnect: true}, function (err, db) {
+    MongoClient.connect(setting.mongodb_host.mongodb_cloud_url, {poolSize: 50, autoReconnect: true}, function (err, db) {
         assert.equal(null, err);
 
         exports.get_all_table_names = function (cb) {

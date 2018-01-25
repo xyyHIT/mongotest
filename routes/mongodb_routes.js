@@ -24,7 +24,6 @@ exports.testConnection = function (req, res) {
     });
 };
 
-
 exports.getAllTables = function (req, res) {
     cloud_db.get_all_table_names(function (allTables) {
         if (allTables) {
@@ -137,7 +136,7 @@ exports.ensureSharding = function (req, res) {
     var total = global.TABLES.length;
     async.eachLimit(global.TABLES, 50, function (tableObj, callback) {
         index++;
-        var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {ts_user_id:1, ts_table_id:1}};
+        var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {_id:1},unique : true};
         cloud_db.adminRunCommand(command, function (result) {
             console.log(index+'/'+total+" shardcollection ===>"+JSON.stringify(result.result));
             callback(null);

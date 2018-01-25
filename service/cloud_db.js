@@ -287,7 +287,7 @@ function connect_cloud_db() {
             var collection = db.collection(collectionInfo.name);
 
             exports.adminRunCommand()
-        }
+        };
 
         function getNowFormatDate() {
             var date = new Date();

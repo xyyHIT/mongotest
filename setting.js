@@ -20,7 +20,7 @@ module.exports = {
 
     mongodb_host : {
         //url : "mongodb://127.0.0.1:27001,127.0.0.1:27002,127.0.0.1:27003"
-        mongodb_cloud_url: "mongodb://10.30.252.215:27001/TS_Cloud_DB",
+        mongodb_cloud_url: "mongodb://10.30.252.215:27002/TS_Cloud_DB",
         mongodb_admin_url: "mongodb://10.66.92.53:20000,10.30.252.215:20000,10.66.92.86:20000/admin",
     },
 };

@@ -329,6 +329,8 @@ function connect_cloud_db() {
         };
 
         exports.findByObjectId = function (collectionName, objectId, cb) {
+            console.log("collectionName ===>"+ collectionName);
+            console.log("objectId ===>"+objectId);
             var collection = db.collection(collectionName);
             collection.findOne({_id: ObjectID(objectId)}, {}, function (err, doc) {
                 if (err) {

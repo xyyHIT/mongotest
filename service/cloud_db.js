@@ -179,7 +179,7 @@ function connect_cloud_db() {
             async.series([
                 // 创建分片索引
                 function (cb) {
-                    collection.createIndex({ts_user_id:1, ts_table_id:1}, {}, function (err, indexName) {
+                    collection.createIndex({_id: "hash"}, {unique:true}, function (err, indexName) {
                         if (!err) {
                             cb(null, collectionName+' createShardIndexOk  indexName='+indexName);
                         } else {
@@ -238,11 +238,11 @@ function connect_cloud_db() {
                     if (!error) {
                         console.log(collectionName + "dropIndexOK");
                         // 删除成功，开始新建索引
-                        var unKey = {ts_user_id:1, ts_table_id:1};
+                        var unKey = {_id:"hash"};
                         for( var keyObj in un_index.key) {
                             unKey[keyObj] = 1;
                         }
-                        collection.createIndex(unKey, {unique: true,}, function (er, indexName) {
+                        collection.createIndex(unKey, {unique: true}, function (er, indexName) {
                             if (!er) {
                                 console.log(collectionName + "createIndexOK");
                                 callback();

@@ -179,7 +179,7 @@ function connect_cloud_db() {
             async.series([
                 // 创建分片索引
                 function (cb) {
-                    collection.createIndex({_id: "hash"}, {unique:true}, function (err, indexName) {
+                    collection.createIndex({_id: "hashed"}, {unique:true}, function (err, indexName) {
                         if (!err) {
                             cb(null, collectionName+' createShardIndexOk  indexName='+indexName);
                         } else {

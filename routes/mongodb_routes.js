@@ -136,7 +136,7 @@ exports.ensureSharding = function (req, res) {
     var total = global.TABLES.length;
     async.eachLimit(global.TABLES, 50, function (tableObj, callback) {
         index++;
-        var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {_id:1},unique : true};
+        var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {_id:"hash"},unique : true};
         cloud_db.adminRunCommand(command, function (result) {
             console.log(index+'/'+total+" shardcollection ===>"+JSON.stringify(result.result));
             callback(null);
@@ -148,7 +148,7 @@ exports.ensureSharding = function (req, res) {
 };
 
 exports.createShardIndex = function (req, res) {
-    var collectionInfo = {name: "TS_Cloud_DB.DataView", shardKey:{user_id:1,tb_id:1}};
+    var collectionInfo = {name: "TS_Cloud_DB.DataView", shardKey:{_id:"hash"}};
     cloud_db.createShardIndex(collectionInfo, function (result) {
         console.log("result ===>" + result.result);
     });

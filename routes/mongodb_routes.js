@@ -308,3 +308,11 @@ exports.async_waterfall = function (req, res) {
         console.log("waterfall:"+result);
     });
 };
+
+exports.findByObjectId = function (req, res) {
+    var collectionName = req.query.table;
+    var objectId = req.query.id;
+    cloud_db.findByObjectId(collectionName, objectId, function (doc) {
+        res.send("result ===> "+doc.result);
+    });
+}

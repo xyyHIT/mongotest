@@ -205,7 +205,7 @@ function connect_cloud_db() {
                                     } else {
                                         callback(null, 'create error');
                                     }
-                                })
+                                });
                             } else {
                                 callback(null, 'no unique index');
                             }
@@ -230,6 +230,45 @@ function connect_cloud_db() {
             });
         };
 
+        exports.fixUniqueIndex = function (collectionName, indexList, cb) {
+            var collection = db.collection(collectionName);
+            async.series([
+                function (cb) {
+                    // 先删除唯一索引
+                    async.each(indexList, function (un_index, callback) {
+                        var indexName = un_index.name;
+                        collection.dropIndex(indexName, {}, function (error, del_result) {
+                            if (!error) {
+                                console.log(collectionName + "dropIndexOK");
+                            } else {
+                                callback(collectionName + "dropIndexFail");
+                            }
+                        });
+                    }, function (err) {
+                        if (err) {
+                            cb({ok: 0});
+                        } else {
+                            cb({ok: 1});
+                        }
+                    });
+                },
+                // 判断是否是数据中心数据，如果是，对数据进行MD5补充
+                function (cb) {
+                    // 判断是否是数据中心表
+                    var col_tables = db.collection("Tables");
+                    var table_id = collectionName.substring(24);
+                    col_tables.findOne({_id:ObjectID(table_id)}, function (err,item) {
+                        if (item) {
+                            // 存在数据，需要对数据进行处理
+
+                        }
+                    })
+                }
+            ], function (err, result) {
+
+            })
+        }
+
         exports.createShardUniqueIndex = function (collectionName, indexList, cb) {
             var collection = db.collection(collectionName);
             async.each(indexList, function (un_index, callback) {
@@ -247,7 +286,7 @@ function connect_cloud_db() {
                                 console.log(collectionName + "createIndexOK");
                                 callback();
                             } else {
-                                callback(collectionName + "createIndexFail");
+                                callback(collectionName + "createUiqueIndexFail");
                             }
                         });
                     } else {
@@ -288,6 +327,17 @@ function connect_cloud_db() {
 
             exports.adminRunCommand()
         };
+
+        exports.findByObjectId = function (collectionName, objectId, cb) {
+            var collection = db.collection(collectionName);
+            collection.findOne({_id: ObjectID(objectId)}, {}, function (err, doc) {
+                if (err) {
+                    cb({result:err});
+                } else {
+                    cb({result:doc});
+                }
+            })
+        }
 
         function getNowFormatDate() {
             var date = new Date();

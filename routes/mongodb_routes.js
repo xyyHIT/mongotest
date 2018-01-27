@@ -313,6 +313,6 @@ exports.findByObjectId = function (req, res) {
     var collectionName = req.query.table.toString();
     var objectId = req.query.id.toString();
     cloud_db.findByObjectId(collectionName, objectId, function (doc) {
-        res.send("result ===> "+doc.result);
+        res.send("result ===> "+JSON.stringify(doc.result));
     });
 }

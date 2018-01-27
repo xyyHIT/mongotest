@@ -148,7 +148,7 @@ exports.ensureSharding = function (req, res) {
 };
 
 exports.createShardIndex = function (req, res) {
-    var collectionInfo = {name: "TS_Cloud_DB.DataView", shardKey:{_id:"hashed"}};
+    var collectionInfo = {name: "TS_Cloud_DB.DataView", shardKey:{_id:"hash"}};
     cloud_db.createShardIndex(collectionInfo, function (result) {
         console.log("result ===>" + result.result);
     });

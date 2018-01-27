@@ -238,7 +238,7 @@ function connect_cloud_db() {
                     if (!error) {
                         console.log(collectionName + "dropIndexOK");
                         // 删除成功，开始新建索引
-                        var unKey = {_id:"hash"};
+                        var unKey = {_id:"hashed"};
                         for( var keyObj in un_index.key) {
                             unKey[keyObj] = 1;
                         }

@@ -339,7 +339,7 @@ function connect_cloud_db() {
                     cb({result:doc});
                 }
             })
-        }
+        };
 
         function getNowFormatDate() {
             var date = new Date();

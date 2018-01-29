@@ -42,7 +42,8 @@ exports.checkCollection = function (req, res) {
 exports.ensureSharding = function (req, res) {
     var index = 0;
     var total = global.ALLTABLELENAMES.length;
-    async.eachLimit(global.ALLTABLELENAMES, 1, function (tableObj, callback) {
+    var beginTime = Date.now();
+    async.eachLimit(global.ALLTABLELENAMES, 50, function (tableObj, callback) {
         index++;
         async.waterfall([
             // 从replicaSet获取原有表中的索引信息
@@ -67,13 +68,17 @@ exports.ensureSharding = function (req, res) {
             }
         ], function (err, result) {
                 if (err) {
-                    logger.debug(index+'/'+total+" ensureSharding" + tableObj +" err==>"+JSON.stringify(err));
+                    logger.info(index+'/'+total+" ensureSharding" + tableObj +" err==>"+JSON.stringify(err));
                     callback(null, 'ensureSharding Fail');
                 } else {
-                    logger.debug(index+'/'+total+" ensureSharding" + tableObj + " Ok==>"+JSON.stringify(result));
+                    logger.info(index+'/'+total+" ensureSharding" + tableObj + " Ok==>"+JSON.stringify(result));
                     callback(null, 'ensureSharding Ok');
                 }
             });
+    }, function (err) {
+        var endTime = Date.now();
+        var costTime = (endTime - beginTime)/1000;
+        logger.info("共创建"+total+"个, 耗时:"+ costTime)
     });
     res.send({result:"开始运行，共需要创建"+total+"个"});
 };

@@ -46,7 +46,7 @@ var ShardRouter = require('./routes/shard_routers.js');
 
 app.get('/test/getColNames', ShardRouter.getColNames);
 
-app.post(/^\/mongodb\/(\S+)/, MongDB.index);
+//app.post(/^\/mongodb\/(\S+)/, MongDB.index);
 
 var port = setting.web_port || 80;
 var server = app.listen(port, function () {

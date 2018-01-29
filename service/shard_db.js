@@ -70,7 +70,6 @@ function connect_shard_db() {
                 if (err) {
                     logger.error(collectionName + " createShardIndex error : "+err);
                 }
-                logger.debug("indexCount==="+indexCount);
                 cb({result:indexCount});
             })
         };

@@ -60,20 +60,18 @@ exports.ensureSharding = function (req, res) {
             },
             // 对表应用分片
             function (indexCount, cb) {
-                logger.debug("3.... "+indexCount);
                 var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {_id:1}};
                 shard_db.adminRunCommand(command, function (result) {
-                    logger.log(index+'/'+total+" shardcollection ===>"+JSON.stringify(result.result));
                     cb(null, result.result);
                 });
             }
         ], function (err, result) {
                 if (err) {
-                    logger.log("ensureSharding err==>"+JSON.stringify(err));
-                    callback(null, tableObj + ' ensureSharding Fail');
+                    logger.debug(index+'/'+total+" ensureSharding" + tableObj +" err==>"+JSON.stringify(err));
+                    callback(null, 'ensureSharding Fail');
                 } else {
-                    logger.log("ensureSharding Ok result==>"+result);
-                    callback(null, ensureSharding + ' ensureSharding Ok result='+result);
+                    logger.debug(index+'/'+total+" ensureSharding" + tableObj + " Ok==>"+JSON.stringify(result));
+                    callback(null, 'ensureSharding Ok');
                 }
             });
     });

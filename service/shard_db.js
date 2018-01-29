@@ -27,7 +27,7 @@ function connect_shard_admin() {
         // };
 
         exports.adminRunCommand = function (command, cb) {
-            console.log("command == "+ JSON.stringify(command));
+            logger.debug("command == "+ JSON.stringify(command));
             db.command(command, function (err, info) {
                 if (!err) {
                     cb({result: err});

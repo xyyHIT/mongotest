@@ -64,9 +64,7 @@ exports.ensureSharding = function (req, res) {
                 var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {_id:1}};
                 shard_db.adminRunCommand(command, function (result) {
                     logger.log(index+'/'+total+" shardcollection ===>"+JSON.stringify(result.result));
-                }, function (err) {
-                    console.log('共处理分片集合'+index);
-                    cb(null, 'shardCollection' + tableObj);
+                    cb(null, result.result);
                 });
             }
         ], function (err, result) {

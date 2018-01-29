@@ -13,14 +13,21 @@ function connect_replicaSet_db() {
         assert.equal(null, err);
 
         exports.get_all_table_names = function (cb) {
-            db.collectionNames(function (err, items) {
-                if (err) {
-                    logger.error("get_all_table_names err ===>"+err);
-                    cb({tables:[]});
-                } else {
-                    logger.debug("get_all_table_names ===>"+items.length);
-                    cb({tables: items});
+            var tableNames = [];
+            var collection = db.collection('Tables');
+            collection.find({},{user_id:1, _id:1}).sort({user_id:1}).toArray(function (err, allCollection) {
+                for(var i=0;i<allCollection.length;i++) {
+                    var tableName = 'Table_'+allCollection[i].user_id+"_"+allCollection[i]._id;
+                    tableNames[i] = tableName;
                 }
+                var json = {};
+                if (err) {
+                    json.success = false;
+                    json.msg = err;
+                } else {
+                    json = tableNames;
+                }
+                cb(json);
             });
         };
 

@@ -48,15 +48,12 @@ exports.ensureSharding = function (req, res) {
             // 从replicaSet获取原有表中的索引信息
             function (callback) {
                 replicaSet_db.getTableIndexes(tableObj, function (indexList) {
-                    logger.debug(tableObj + " index ===>" + indexList);
                     callback(null, indexList.result);
                 })
             },
             // 设置shard 分片表信息
-            function (indexList, callback) {
-                shard_db.createShardIndex(tableObj, indexList, function () {
-
-                })
+            function (indexes, callback) {
+                logger.debug(tableObj + "  indexes ===>"+indexes);
             },
             // 对表应用分片
         ],

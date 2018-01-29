@@ -48,6 +48,7 @@ exports.ensureSharding = function (req, res) {
             // 从replicaSet获取原有表中的索引信息
             function (callback) {
                 replicaSet_db.getTableIndexes(tableObj, function (indexList) {
+                    logger.debug(tableObj + " index ===>" + indexList);
                     callback(null, indexList.result);
                 })
             },
@@ -62,13 +63,6 @@ exports.ensureSharding = function (req, res) {
             function (err, result) {
 
             });
-        var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {_id:1}};
-        cloud_db.adminRunCommand(command, function (result) {
-            console.log(index+'/'+total+" shardcollection ===>"+JSON.stringify(result.result));
-            callback(null);
-        }, function (err) {
-            console.log('共处理分片集合'+index);
-        });
     });
     res.send({result:"开始运行，共需要创建"+total+"个"});
 };

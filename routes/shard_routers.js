@@ -48,17 +48,35 @@ exports.ensureSharding = function (req, res) {
             // 从replicaSet获取原有表中的索引信息
             function (callback) {
                 replicaSet_db.getTableIndexes(tableObj, function (indexList) {
+                    logger.debug(tableObj + " index ===>" + indexList);
                     callback(null, indexList.result);
                 })
             },
             // 设置shard 分片表信息
             function (indexes, callback) {
-                logger.debug(tableObj + "  indexes ===>"+JSON.stringify(indexes));
+                shard_db.createShardIndex(tableObj, indexes, function (result) {
+                    callback(null, result.result);
+                })
             },
             // 对表应用分片
+            function (indexCount, callback) {
+                var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {_id:1}};
+                shard_db.adminRunCommand(command, function (result) {
+                    logger.log(index+'/'+total+" shardcollection ===>"+JSON.stringify(result.result));
+                    callback(null);
+                }, function (err) {
+                    console.log('共处理分片集合'+index);
+                });
+            }
         ],
             function (err, result) {
-
+                if (err) {
+                    logger.log("ensureSharding err==>"+JSON.stringify(err));
+                    callback(null, tableObj + ' ensureSharding Fail');
+                } else {
+                    logger.log("ensureSharding Ok result==>"+result);
+                    callback(null, ensureSharding + ' ensureSharding Ok result='+result);
+                }
             });
     });
     res.send({result:"开始运行，共需要创建"+total+"个"});

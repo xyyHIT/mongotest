@@ -45,35 +45,25 @@ function connect_shard_db() {
 
         exports.createShardIndex = function (collectionName, indexList, cb) {
             var collection = db.collection(collectionName);
-            async.series([
-                // 创建分片索引
-                function (cb) {
-                    collection.createIndex({_id: 1}, {}, function (err, indexName) {
-                        if (!err) {
-                            cb(null, collectionName+' createShardIndexOk  indexName='+indexName);
-                        } else {
-                            console.log("createShardIndexFail err==> "+JSON.stringify(err));
-                            cb(null, collectionName+' createShardIndexFail');
-                        }
-                    })
-                },
-                // 创建原有数据库索引
-                function (cb) {
-                    async.each(indexList, function (indexInfo, callback) {
-                        logger.info(JSON.stringify(indexInfo));
-                    }, function (err) {
-                        
+            var indexCount = 0;
+            async.each(indexList, function (indexInfo, callback) {
+                if (!indexInfo.key.equal({"_id":1})) {
+                    indexCount++;
+                    logger.debug(collectionName + " create index" + JSON.stringify(indexInfo.key));
+                    var index_list = indexInfo.key;
+                    if (indexInfo.unique) {
+                        var index_unique = {_id: 1};
+                        index_list = JSON.parse((JSON.stringify(index_unique)+JSON.stringify(index_list)).replace(/}{/,','));
+                    }
+                    logger.debug(collectionName + " index key ===>" + JSON.stringify(index_list));
+                    collection.createIndex(index_list, function (msg) {
+                        cb(null, collectionName+" create index ok!");
                     });
                 }
-
-            ], function (err, result) {
-                if (!err) {
-                    cb({num: 1});
-                } else {
-                    console.log("err==> "+JSON.stringify(err));
-                    cb({num: 0});
-                }
-            });
+                callback(null);
+            }, function (err) {
+                cb({result:indexCount});
+            })
         };
 
         //创建唯一索引
@@ -129,5 +119,5 @@ function connect_shard_db() {
         }
     });
 }
-//connect_shard_db();
-//connect_shard_admin();
+connect_shard_db();
+connect_shard_admin();

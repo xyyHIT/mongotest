@@ -11,7 +11,9 @@ exports.index = function (req, res) {
 
 // 从主从服务器获取所有表
 exports.getColNames = function (req, res) {
+    logger.debug("request  getColNames");
     replicaSet_db.get_all_table_names(function (allTables) {
+        logger.debug("replicaSet_db.get_all_table_names  callback");
         if (allTables) {
             global.ALLTABLELENAMES = allTables.tables;
             res.send(global.ALLTABLELENAMES);

@@ -1,5 +1,6 @@
 const setting = require("../setting");
 
+var logger = require('log4js').getLogger(__filename);
 var mongodb = require('mongodb')
 var MongoClient = mongodb.MongoClient;
 var assert = require('assert');
@@ -13,8 +14,10 @@ function connect_replicaSet_db() {
         exports.get_all_table_names = function (cb) {
             db.listCollections(function (err, items) {
                 if (err) {
+                    logger.error("get_all_table_names err ===>"+err);
                     cb({tables:[]});
                 } else {
+                    logger.debug("get_all_table_names ===>"+items.length);
                     cb({tables: items});
                 }
             })

@@ -13,7 +13,7 @@ exports.index = function (req, res) {
 exports.getColNames = function (req, res) {
     replicaSet_db.get_all_table_names(function (allTables) {
         if (allTables) {
-            global.ALLTABLELENAMES = allTables.items;
+            global.ALLTABLELENAMES = allTables.tables;
             res.send(global.ALLTABLELENAMES);
         } else {
             res.send('Table not found!');

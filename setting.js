@@ -12,7 +12,7 @@ module.exports = {
         categories:{
             default: {
                 appenders: ['console'],
-                level: 'error'
+                level: 'debug'
             }
         }
     },

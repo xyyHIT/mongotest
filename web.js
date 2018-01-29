@@ -44,7 +44,7 @@ var ShardRouter = require('./routes/shard_routers.js');
 // app.get('/test/createShardIndex', MongDB.createShardIndex);
 // app.get('/test/findByObjectId', MongDB.findByObjectId);
 
-app.get('/test/getColNames', ShardRouter.getColNames);
+app.get('/test/getAllUserTables', ShardRouter.getAllUserTables);
 app.get('/test/checkCollection', ShardRouter.checkCollection);
 
 //app.post(/^\/mongodb\/(\S+)/, MongDB.index);

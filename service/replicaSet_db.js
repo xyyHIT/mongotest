@@ -13,7 +13,7 @@ function connect_replicaSet_db() {
         assert.equal(null, err);
 
         exports.get_all_table_names = function (cb) {
-            db.listCollections(function (err, items) {
+            db.listCollections(null, null, function (err, items) {
                 if (err) {
                     logger.error("get_all_table_names err ===>"+err);
                     cb({tables:[]});
@@ -21,7 +21,7 @@ function connect_replicaSet_db() {
                     logger.debug("get_all_table_names ===>"+items.length);
                     cb({tables: items});
                 }
-            })
+            });
         };
 
         exports.collection_is_exsist = function (collectionName, cb) {

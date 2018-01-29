@@ -129,5 +129,5 @@ function connect_shard_db() {
         }
     });
 }
-connect_shard_db();
-connect_shard_admin();
+//connect_shard_db();
+//connect_shard_admin();

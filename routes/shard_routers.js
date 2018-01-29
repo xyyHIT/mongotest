@@ -60,6 +60,7 @@ exports.ensureSharding = function (req, res) {
             },
             // 对表应用分片
             function (indexCount, cb) {
+                logger.debug("3.... "+indexCount);
                 var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {_id:1}};
                 shard_db.adminRunCommand(command, function (result) {
                     logger.log(index+'/'+total+" shardcollection ===>"+JSON.stringify(result.result));

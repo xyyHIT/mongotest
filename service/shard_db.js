@@ -60,13 +60,17 @@ function connect_shard_db() {
                     logger.debug(collectionName + " create index key ===>" + JSON.stringify(index_list));
                     collection.createIndex(index_list, options, function (msg) {
                         logger.debug(collectionName + " create index ===>" + JSON.stringify(msg));
+                        callback();
                     });
-                    callback();
                 } else {
                     logger.debug(collectionName + " ignore index " + JSON.stringify(indexInfo));
                     callback();
                 }
             }, function (err) {
+                if (err) {
+                    logger.error(collectionName + " createShardIndex error : "+err);
+                }
+                logger.debug("indexCount==="+indexCount);
                 cb({result:indexCount});
             })
         };

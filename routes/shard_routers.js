@@ -53,7 +53,7 @@ exports.ensureSharding = function (req, res) {
             },
             // 设置shard 分片表信息
             function (indexes, callback) {
-                logger.debug(tableObj + "  indexes ===>"+indexes);
+                logger.debug(tableObj + "  indexes ===>"+JSON.stringify(indexes));
             },
             // 对表应用分片
         ],

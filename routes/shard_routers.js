@@ -11,15 +11,24 @@ exports.index = function (req, res) {
 
 // 从主从服务器获取所有表
 exports.getColNames = function (req, res) {
-    logger.debug("request  getColNames");
-    replicaSet_db.get_all_table_names(function (allTables) {
-        logger.debug("replicaSet_db.get_all_table_names  callback");
-        if (allTables) {
-            global.ALLTABLELENAMES = allTables.tables;
+    replicaSet_db.get_all_tables(function (allTables) {
+        console.log("allTables.tables.length==" + allTables.tables.length);
+        async.each(allTables.tables, function (tableObj, callback) {
+            // var name = 'Table_'+tableObj.user_id+'_'+tableObj._id;
+            // global.TABLES.push(name);
+            if (tableObj.rela_user && tableObj.rela_user.length > 0) {
+                async.each(tableObj.rela_user, function (obj, cb) {
+                    var name = 'Table_'+obj.user_id+'_'+tableObj._id;
+                    global.ALLTABLELENAMES.push(name);
+                    cb(null);
+                }, function (err) {
+                    console.log('currlength=' + global.ALLTABLELENAMES.length);
+                })
+            }
+            callback(null);
+        }, function (err) {
             res.send(global.ALLTABLELENAMES);
-        } else {
-            res.send('Table not found!');
-        }
+        });
     });
 };
 

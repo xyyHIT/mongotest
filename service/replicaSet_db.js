@@ -12,22 +12,14 @@ function connect_replicaSet_db() {
     MongoClient.connect(setting.mongodb_host_replicaSet.mongodb_cloud_url, {poolSize: 50, autoReconnect: true}, function (err, db) {
         assert.equal(null, err);
 
-        exports.get_all_table_names = function (cb) {
-            var tableNames = [];
+        exports.get_all_tables = function (cb) {
             var collection = db.collection('Tables');
-            collection.find({},{user_id:1, _id:1}).sort({user_id:1}).toArray(function (err, allCollection) {
-                for(var i=0;i<allCollection.length;i++) {
-                    var tableName = 'Table_'+allCollection[i].user_id+"_"+allCollection[i]._id;
-                    tableNames[i] = tableName;
-                }
-                var json = {};
+            collection.find({},{fields:{user_id:1, _id:1, rela_user:1}}).sort({user_id:1}).toArray(function (err, allCollection) {
                 if (err) {
-                    json.success = false;
-                    json.msg = err;
+                    cb({tables: []});
                 } else {
-                    json = tableNames;
+                    cb({tables: allCollection});
                 }
-                cb(json);
             });
         };
 

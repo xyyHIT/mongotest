@@ -42,34 +42,33 @@ exports.checkCollection = function (req, res) {
 exports.ensureSharding = function (req, res) {
     var index = 0;
     var total = global.ALLTABLELENAMES.length;
-    async.eachLimit(global.ALLTABLELENAMES, 50, function (tableObj, callback) {
+    async.eachLimit(global.ALLTABLELENAMES, 1, function (tableObj, callback) {
         index++;
         async.waterfall([
             // 从replicaSet获取原有表中的索引信息
-            function (callback) {
+            function (cb) {
                 replicaSet_db.getTableIndexes(tableObj, function (indexList) {
                     logger.debug(tableObj + " index ===>" + indexList);
-                    callback(null, indexList.result);
+                    cb(null, indexList.result);
                 })
             },
             // 设置shard 分片表信息
-            function (indexes, callback) {
+            function (indexes, cb) {
                 shard_db.createShardIndex(tableObj, indexes, function (result) {
-                    callback(null, result.result);
+                    cb(null, result.result);
                 })
             },
             // 对表应用分片
-            function (indexCount, callback) {
+            function (indexCount, cb) {
                 var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {_id:1}};
                 shard_db.adminRunCommand(command, function (result) {
                     logger.log(index+'/'+total+" shardcollection ===>"+JSON.stringify(result.result));
-                    callback(null);
                 }, function (err) {
                     console.log('共处理分片集合'+index);
+                    cb(null, 'shardCollection' + tableObj);
                 });
             }
-        ],
-            function (err, result) {
+        ], function (err, result) {
                 if (err) {
                     logger.log("ensureSharding err==>"+JSON.stringify(err));
                     callback(null, tableObj + ' ensureSharding Fail');

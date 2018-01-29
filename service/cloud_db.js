@@ -7,26 +7,8 @@ var async = require("async");
 
 var ObjectID = mongodb.ObjectID;
 
-
-function connect_user_db() {
-    MongoClient.connect(setting.mongodb_host.url+"/user", { poolSize: 5, autoReconnect: true}, function (err, db) {
-        assert.equal(null, err);
-
-        exports.create_user = function (json, cb) {
-            var collection = db.collection('user');
-            collection.save(json, function (err, result) {
-                if (err) {
-                    cb({success: false, msg: err});
-                } else {
-                    cb({success: true, msg: result});
-                }
-            });
-        };
-    });
-}
-
 function connect_admin_db() {
-    MongoClient.connect(setting.mongodb_host.mongodb_admin_url, {poolSize: 50, autoReconnect: true}, function (err, db) {
+    MongoClient.connect(setting.mongodb_host_shard.mongodb_admin_url, {poolSize: 50, autoReconnect: true}, function (err, db) {
         assert.equal(null, err);
 
         // exports.runCommand = function (collectionName, cb) {
@@ -56,7 +38,7 @@ function connect_admin_db() {
 }
 
 function connect_cloud_db() {
-    MongoClient.connect(setting.mongodb_host.mongodb_cloud_url, {poolSize: 50, autoReconnect: true}, function (err, db) {
+    MongoClient.connect(setting.mongodb_host_shard.mongodb_cloud_url, {poolSize: 50, autoReconnect: true}, function (err, db) {
         assert.equal(null, err);
 
         exports.get_all_table_names = function (cb) {

@@ -48,7 +48,7 @@ exports.ensureSharding = function (req, res) {
             // 从replicaSet获取原有表中的索引信息
             function (cb) {
                 replicaSet_db.getTableIndexes(tableObj, function (indexList) {
-                    logger.debug(tableObj + " index ===>" + indexList);
+                    logger.debug(tableObj + " index ===>" + JSON.stringify(indexList));
                     cb(null, indexList.result);
                 })
             },

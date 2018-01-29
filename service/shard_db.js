@@ -47,18 +47,23 @@ function connect_shard_db() {
             var collection = db.collection(collectionName);
             var indexCount = 0;
             async.each(indexList, function (indexInfo, callback) {
-                logger.debug(collectionName + " create index " + JSON.stringify(indexInfo));
                 if (!(indexInfo.name == "_id_")) {
+                    logger.debug(collectionName + " index " + JSON.stringify(indexInfo));
                     indexCount++;
                     var index_list = indexInfo.key;
+                    var options = {};
                     if (indexInfo.unique) {
                         var index_unique = {_id: 1};
                         index_list = JSON.parse((JSON.stringify(index_unique)+JSON.stringify(index_list)).replace(/}{/,','));
+                        options = {unique: true};
                     }
                     logger.debug(collectionName + " index key ===>" + JSON.stringify(index_list));
-                    collection.createIndex(index_list, function (msg) {
+                    collection.createIndex(index_list, options, function (msg) {
                         callback(null, collectionName+" create index ok!");
                     });
+                } else {
+                    logger.debug(collectionName + " index " + JSON.stringify(indexInfo));
+                    callback();
                 }
             }, function (err) {
                 cb({result:indexCount});

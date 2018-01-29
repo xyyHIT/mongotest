@@ -11,7 +11,7 @@ function connect_replicaSet_db() {
     MongoClient.connect(setting.mongodb_host_replicaSet.mongodb_cloud_url, {poolSize: 50, autoReconnect: true}, function (err, db) {
         assert.equal(null, err);
         exports.get_all_table_names = function (cb) {
-            db.collectionNames(function (err, items) {
+            db.listCollections(function (err, items) {
                 if (err) {
                     cb({tables:[]});
                 } else {

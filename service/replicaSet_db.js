@@ -13,7 +13,7 @@ function connect_replicaSet_db() {
         assert.equal(null, err);
 
         exports.get_all_table_names = function (cb) {
-            db.listCollections(null, null, function (err, items) {
+            db.collectionNames(function (err, items) {
                 if (err) {
                     logger.error("get_all_table_names err ===>"+err);
                     cb({tables:[]});

@@ -57,10 +57,9 @@ function connect_shard_db() {
                     }
                     logger.debug(collectionName + " index key ===>" + JSON.stringify(index_list));
                     collection.createIndex(index_list, function (msg) {
-                        cb(null, collectionName+" create index ok!");
+                        callback(null, collectionName+" create index ok!");
                     });
                 }
-                callback(null);
             }, function (err) {
                 cb({result:indexCount});
             })

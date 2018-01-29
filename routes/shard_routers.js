@@ -23,20 +23,12 @@ exports.getColNames = function (req, res) {
     });
 };
 
-exports.createTableIndex = function (req, res) {
-    var index = 0;
-    var total = global.ALLTABLELENAMES.length;
-    async.eachLimit(global.ALLTABLELENAMES, 50, function (tableObj, callback) {
-        index++;
-        replicaSet_db.createTableIndex(tableObj, function (result) {
-            console.log(index+'/'+total+' '+tableObj+" createIndex ===>" + result.num);
-            callback(null);
-        }, function (err) {
-            console.log('共创建索引'+index);
-        });
+exports.checkCollection = function (req, res) {
+    var collectionName = req.query.table;
+    replicaSet_db.collection_is_exsist(collectionName, function (result) {
+        res.send(result);
     });
-    res.send({result:"开始运行，共需要创建"+total+"个"});
-};
+}
 
 exports.ensureSharding = function (req, res) {
     var index = 0;

@@ -22,9 +22,9 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 app.use(cookieParser());
 
 //MongoDB控制器响应入口
-var MongDB = require('./routes/mongodb_routes.js');
-// var ShardRouter = require('./routes/shard_routers.js');
-//
+//var MongDB = require('./routes/mongodb_routes.js');
+var ShardRouter = require('./routes/shard_routers.js');
+
 // app.get('/mongodb/getAllTables', MongDB.getAllTables);
 // app.get('/mongodb/createUser', MongDB.createUser);
 // app.get('/mongodb/getCollectionDocCount', MongDB.getCollectionDocCount);

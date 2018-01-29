@@ -48,7 +48,7 @@ function connect_shard_db() {
             var indexCount = 0;
             async.each(indexList, function (indexInfo, callback) {
                 if (!(indexInfo.name == "_id_")) {
-                    logger.debug(collectionName + "need create index " + JSON.stringify(indexInfo));
+                    logger.debug(collectionName + " need create index " + JSON.stringify(indexInfo));
                     indexCount++;
                     var index_list = indexInfo.key;
                     var options = {};
@@ -57,13 +57,13 @@ function connect_shard_db() {
                         index_list = JSON.parse((JSON.stringify(index_unique)+JSON.stringify(index_list)).replace(/}{/,','));
                         options = {unique: true};
                     }
-                    logger.debug(collectionName + "create index key ===>" + JSON.stringify(index_list));
+                    logger.debug(collectionName + " create index key ===>" + JSON.stringify(index_list));
                     collection.createIndex(index_list, options, function (msg) {
-                        logger.debug(collectionName + "create index ===>" + JSON.stringify(msg));
-                        callback();
+                        logger.debug(collectionName + " create index ===>" + JSON.stringify(msg));
                     });
+                    callback();
                 } else {
-                    logger.debug(collectionName + "ignore index " + JSON.stringify(indexInfo));
+                    logger.debug(collectionName + " ignore index " + JSON.stringify(indexInfo));
                     callback();
                 }
             }, function (err) {

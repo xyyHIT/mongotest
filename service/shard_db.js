@@ -47,9 +47,9 @@ function connect_shard_db() {
             var collection = db.collection(collectionName);
             var indexCount = 0;
             async.each(indexList, function (indexInfo, callback) {
-                if (!indexInfo.key.equal({"_id":1})) {
+                logger.debug(collectionName + " create index " + JSON.stringify(indexInfo));
+                if (!(indexInfo.name == "_id_")) {
                     indexCount++;
-                    logger.debug(collectionName + " create index" + JSON.stringify(indexInfo.key));
                     var index_list = indexInfo.key;
                     if (indexInfo.unique) {
                         var index_unique = {_id: 1};

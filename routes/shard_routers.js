@@ -41,7 +41,7 @@ exports.ensureSharding = function (req, res) {
     var index = 0;
     var total = global.ALLTABLELENAMES.length;
     var beginTime = Date.now();
-    async.eachLimit(global.ALLTABLELENAMES, 100, function (tableObj, callback) {
+    async.eachLimit(global.ALLTABLELENAMES, 200, function (tableObj, callback) {
         index++;
         async.waterfall([
             // 从replicaSet获取原有表中的索引信息
@@ -58,18 +58,18 @@ exports.ensureSharding = function (req, res) {
                 })
             },
             // 如果有唯一索引，查看是否是数据中心表，如果不是，删除该唯一索引
-            function (uniqueIndexList, cb) {
-                replicaSet_db.isDataCenterCollection(tableObj, function (result) {
-                    if (!result.isCheck) {
-                        shard_db.dropUniqueIndex(uniqueIndexList, tableObj, function (dropResult) {
-                            logger.debug(tableObj + " drop Index result ===>" + dropResult);
-                            cb(null, 'shardIndex OK');
-                        })
-                    } else {
-                        cb(null, 'shardIndex OK');
-                    }
-                })
-            },
+            // function (uniqueIndexList, cb) {
+            //     replicaSet_db.isDataCenterCollection(tableObj, function (result) {
+            //         if (!result.isCheck) {
+            //             shard_db.dropUniqueIndex(uniqueIndexList, tableObj, function (dropResult) {
+            //                 logger.debug(tableObj + " drop Index result ===>" + dropResult);
+            //                 cb(null, 'shardIndex OK');
+            //             })
+            //         } else {
+            //             cb(null, 'shardIndex OK');
+            //         }
+            //     })
+            // },
             // 对表应用分片
             function (shardIndex, cb) {
                 var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {_id:1}};

@@ -24,6 +24,6 @@ module.exports = {
         mongodb_admin_url: "mongodb://10.66.92.53:20000,10.30.252.215:20000,10.66.92.86:20000/admin",
     },
     mongodb_host_replicaSet : {
-        mongodb_cloud_url: "mongodb://cloud_db_new:l6SlTuU7hkDOAlziXkBAs8l9Sbf83UHi@1dds-wz91fa17dcdb74441.mongodb.rds.aliyuncs.com:3717/TS_Cloud_DB"
+        mongodb_cloud_url: "mongodb://cloud_db_new:l6SlTuU7hkDOAlziXkBAs8l9Sbf83UHi@dds-wz91fa17dcdb74441.mongodb.rds.aliyuncs.com:3717,dds-wz91fa17dcdb74442.mongodb.rds.aliyuncs.com:3717/TS_Cloud_DB?replicaSet=mgset-3248735"
     }
 };

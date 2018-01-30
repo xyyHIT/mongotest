@@ -106,6 +106,7 @@ function connect_replicaSet_db() {
         exports.isDataCenterCollection = function(collectionName, cb) {
             var col_tables = db.collection("Tables");
             var objId = collectionName.substring(24);
+            logger.debug(collectionName + " objId ===>"+objId);
             var check = false;
             async.waterfall([
                 // 查询表的用户
@@ -116,6 +117,7 @@ function connect_replicaSet_db() {
                 },
                 // 查询是否是数据中心表
                 function (user_id, cb) {
+                    logger.debug("user_id  ===>" + user_id);
                     if (user_id) {
                         col_tables.findOne({user_id:user_id},{limit:1, fields:{_id:1}}).sort({tb_createTime:-1}).toArray(function (err, docs) {
                             if (docs && docs[0] == objId) {

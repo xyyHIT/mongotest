@@ -14,8 +14,6 @@ exports.getColNames = function (req, res) {
     replicaSet_db.get_all_tables(function (allTables) {
         console.log("allTables.tables.length==" + allTables.tables.length);
         async.each(allTables.tables, function (tableObj, callback) {
-            // var name = 'Table_'+tableObj.user_id+'_'+tableObj._id;
-            // global.TABLES.push(name);
             if (tableObj.rela_user && tableObj.rela_user.length > 0) {
                 async.each(tableObj.rela_user, function (obj, cb) {
                     var name = 'Table_'+obj.user_id+'_'+tableObj._id;

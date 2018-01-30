@@ -98,7 +98,7 @@ exports.shardCollections = function (req, res) {
             // 获取原来表的索引
             function (cb) {
                 replicaSet_db.getTableIndexes(collectionInfo.name, function (indexList) {
-                    logger.debug(tableObj + " index ===>" + JSON.stringify(indexList));
+                    logger.debug(collectionInfo.name + " index ===>" + JSON.stringify(indexList));
                     cb(null, indexList.result);
                 })
             },
@@ -116,10 +116,10 @@ exports.shardCollections = function (req, res) {
         ], function (error, result) {
             if (error) {
                 logger.error(collectionInfo.name + ' shardCollection Fail ===>'+JSON.stringify(error));
-                callback(null + "shard faild");
+                callback(null, "shard faild");
             } else {
-                logger.info(collectionInfo.name + ' shardCollection OK');
-                callback();
+                logger.info(collectionInfo.name + ' shardCollection OK ===>'+JSON.stringify(result));
+                callback(null, "shard ok");
             }
         });
     }, function (err) {

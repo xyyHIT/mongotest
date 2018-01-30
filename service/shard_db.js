@@ -43,19 +43,21 @@ function connect_shard_db() {
     MongoClient.connect(setting.mongodb_host_shard.mongodb_cloud_url, {poolSize: 50, autoReconnect: true}, function (err, db) {
         assert.equal(null, err);
 
+        // 创建分片索引，返回唯一索引的名称列表
         exports.createShardIndex = function (collectionName, indexList, cb) {
             var collection = db.collection(collectionName);
-            var indexCount = 0;
+            var uniqueIndex = [];
             async.each(indexList, function (indexInfo, callback) {
                 if (!(indexInfo.name == "_id_")) {
                     logger.debug(collectionName + " need create index " + JSON.stringify(indexInfo));
-                    indexCount++;
                     var index_list = indexInfo.key;
                     var options = {};
                     if (indexInfo.unique) {
+                        // 判断是否是数据中心
                         var index_unique = {_id: 1};
                         index_list = JSON.parse((JSON.stringify(index_unique)+JSON.stringify(index_list)).replace(/}{/,','));
                         options = {unique: true};
+                        uniqueIndex.push(index_list);
                     }
                     logger.debug(collectionName + " create index key ===>" + JSON.stringify(index_list));
                     collection.createIndex(index_list, options, function (msg) {
@@ -70,61 +72,27 @@ function connect_shard_db() {
                 if (err) {
                     logger.error(collectionName + " createShardIndex error : "+err);
                 }
-                cb({result:indexCount});
+                cb({result:uniqueIndex});
             })
         };
 
-        //创建唯一索引
-        exports.create_only_index = function (index_only, coll, cb) {
-            var index_list = {_id: 1};
-            for (var i = 0; i < index_only.length; i++) {
-                index_list[index_only[i]] = 1;
-            }
-            coll.createIndex(index_list, { unique: true }, function () {
-                cb();
-            });
-        }
-
-        //创建查询索引
-        exports.create_combo_index = function (index_combo, coll, cb) {
-            async.map(index_combo, function (index_name, cb) {
-                coll.createIndex(index_name, function (msg) {
-                    cb(index_name, msg);
-                });
-            }, cb);
-        }
-
-
-        exports.findByObjectId = function (collectionName, objectId, cb) {
-            console.log("collectionName ===>"+ collectionName);
-            console.log("objectId ===>"+objectId);
+        //删除唯一索引
+        exports.dropUniqueIndex = function (indexList, collectionName, cb) {
             var collection = db.collection(collectionName);
-            collection.findOne({_id: ObjectID(objectId)}, {}, function (err, doc) {
+            async.each(indexList, function (indexInfo, callback) {
+                collection.dropIndex(indexInfo, function (err, result) {
+                    callback(null, 'dropIndex OK');
+                })
+            }, function (err) {
                 if (err) {
-                    cb({result:err});
+                    logger.error(collectionName + " dropUniqueIndex error ===>" + JSON.stringify(err));
                 } else {
-                    cb({result:doc});
+                    logger.error(collectionName + " dropUniqueIndex OK ===>");
                 }
+                cb({result: true});
             })
-        };
 
-        function getNowFormatDate() {
-            var date = new Date();
-            var seperator1 = "-";
-            var seperator2 = ":";
-            var month = date.getMonth() + 1;
-            var strDate = date.getDate();
-            if (month >= 1 && month <= 9) {
-                month = "0" + month;
-            }
-            if (strDate >= 0 && strDate <= 9) {
-                strDate = "0" + strDate;
-            }
-            var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
-                + " " + date.getHours() + seperator2 + date.getMinutes()
-                + seperator2 + date.getSeconds();
-            return currentdate;
-        }
+        };
     });
 }
 connect_shard_db();

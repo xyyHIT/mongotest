@@ -103,6 +103,35 @@ function connect_replicaSet_db() {
             });
         };
 
+        exports.isDataCenterCollection = function(collectionName, cb) {
+            var col_tables = db.collection("Tables");
+            var objId = collectionName.substring(24);
+            var check = false;
+            async.waterfall([
+                // 查询表的用户
+                function (cb) {
+                    col_tables.findOne({_id:ObjectID(objId)}, {fields:{user_id:1}}, function (err, doc) {
+                        cb(null, doc);
+                    })
+                },
+                // 查询是否是数据中心表
+                function (user_id, cb) {
+                    if (user_id) {
+                        col_tables.findOne({user_id:user_id},{limit:1, fields:{_id:1}}).sort({tb_createTime:-1}).toArray(function (err, docs) {
+                            if (docs && docs[0] == objId) {
+                                check = true;
+                            }
+                            cb(null, 'Find user_id');
+                        })
+                    } else {
+                        cb(null, 'No user_id');
+                    }
+                }
+            ], function (err, result) {
+                cb({isCheck: check});
+            })
+        }
+
     });
 }
 connect_replicaSet_db();

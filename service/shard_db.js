@@ -81,7 +81,7 @@ function connect_shard_db() {
             var collection = db.collection(collectionName);
             async.each(indexList, function (indexInfo, callback) {
                 collection.dropIndex(indexInfo, function (err, result) {
-                    callback(null, 'dropIndex OK');
+                    callback();
                 })
             }, function (err) {
                 if (err) {

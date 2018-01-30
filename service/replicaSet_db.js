@@ -105,7 +105,8 @@ function connect_replicaSet_db() {
 
         exports.isDataCenterCollection = function(collectionName, cb) {
             var col_tables = db.collection("Tables");
-            var objId = collectionName.substring(24);
+            var nameLength = collectionName.length;
+            var objId = collectionName.substr(nameLength-24, 24);
             logger.debug(collectionName + " objId ===>"+objId);
             var check = false;
             async.waterfall([

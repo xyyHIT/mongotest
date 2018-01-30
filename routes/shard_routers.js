@@ -41,7 +41,7 @@ exports.ensureSharding = function (req, res) {
     var index = 0;
     var total = global.ALLTABLELENAMES.length;
     var beginTime = Date.now();
-    async.eachLimit(global.ALLTABLELENAMES, 100, function (tableObj, callback) {
+    async.eachLimit(global.ALLTABLELENAMES, 5, function (tableObj, callback) {
         index++;
         async.waterfall([
             // 从replicaSet获取原有表中的索引信息
@@ -80,10 +80,10 @@ exports.ensureSharding = function (req, res) {
         ], function (err, result) {
                 if (err) {
                     logger.info(index+'/'+total+" ensureSharding" + tableObj +" err==>"+JSON.stringify(err));
-                    callback(null, 'ensureSharding Fail');
+                    //callback(null, 'ensureSharding Fail');
                 } else {
                     logger.info(index+'/'+total+" ensureSharding" + tableObj + " Ok==>"+JSON.stringify(result));
-                    callback(null, 'ensureSharding Ok');
+                    //callback(null, 'ensureSharding Ok');
                 }
             });
     }, function (err) {

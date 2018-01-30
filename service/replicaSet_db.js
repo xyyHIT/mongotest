@@ -121,6 +121,7 @@ function connect_replicaSet_db() {
                     logger.debug("user_id  ===>" + parseInt(user_id.user_id));
                     if (user_id) {
                         col_tables.find({user_id:parseInt(user_id.user_id)},{limit:1, fields:{_id:1}}).sort({tb_createTime:-1}).toArray(function (err, docs) {
+                            logger.debug("docs ===>" + JSON.stringify(docs));
                             if (docs && docs[0] == objId) {
                                 check = true;
                             }

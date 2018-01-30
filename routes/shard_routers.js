@@ -85,49 +85,48 @@ exports.ensureSharding = function (req, res) {
 
 exports.shardCollections = function (req, res) {
     var collections = [
-        {name: "Columns", shardKey:{tb_id:1}},
-        {name: "Tables", shardKey:{user_id:1}},
-        {name: "DataView", shardKey:{user_id:1,tb_id:1}},
-        {name: "DataRow", shardKey:{user_id:1,tb_id:1}},
+        {name: "Columns", shardKey:{tb_id:1,col_version:1,_id:1}},
+        {name: "Tables", shardKey:{user_id:1,_id:1}},
+        {name: "DataView", shardKey:{user_id:1,tb_id:1,_id:1}},
+        {name: "DataRow", shardKey:{user_id:1,tb_id:1,_id:1}},
         {name: "SpaceSize", shardKey:{user_id:1}},
         {name: "Storage", shardKey:{user_id:1}},
-        {name: "Interface", shardKey:{user_id:1,tb_id:1}}
+        {name: "Interface", shardKey:{user_id:1,tb_id:1,_id:1}}
         ];
-    async.eachSeries(collections, function (collectionInfo, callback) {
-        async.series([
+    async.each(collections, function (collectionInfo, callback) {
+        async.waterfall([
+            // 获取原来表的索引
             function (cb) {
-                if (collectionInfo.shardKey["user_id"] && collectionInfo.shardKey["tb_id"]) {
-                    cloud_db.createShardIndex(collectionInfo, function (indexResult) {
-                        if (indexResult.result == 1) {
-                            cb(null, indexResult.result);
-                        } else {
-                            cb('createShardIndex Fail', indexResult.result);
-                        }
-                    })
-                } else {
-                    cb(null, 'shardIndexOK');
-                }
+                replicaSet_db.getTableIndexes(collectionInfo.name, function (indexList) {
+                    logger.debug(tableObj + " index ===>" + JSON.stringify(indexList));
+                    cb(null, indexList.result);
+                })
             },
-            function (cb) {
+            function (indexes, cb) {
+                shard_db.createShardIndex(collectionInfo.name, indexes, function (result) {
+                    cb(null, result.result);
+                })
+            },
+            function (indexCount, cb) {
                 var command = {shardCollection: 'TS_Cloud_DB.'+collectionInfo.name, key:collectionInfo.shardKey};
-                cloud_db.adminRunCommand(command, function (result) {
-                    cb(null, collectionInfo.name + "shard result ===>" + JSON.stringify(result.result));
+                shard_db.adminRunCommand(command, function (result) {
+                    cb(null, result.result);
                 })
             }
         ], function (error, result) {
             if (error) {
-                console.log('shardCollectionFail ===>'+JSON.stringify(error));
-                callback(collectionInfo.name + " shard OK");
+                logger.error(collectionInfo.name + ' shardCollection Fail ===>'+JSON.stringify(error));
+                callback(null + "shard faild");
             } else {
-                console.log('shardCollectionOK ===>'+JSON.stringify(result));
+                logger.info(collectionInfo.name + ' shardCollection OK');
                 callback();
             }
         });
     }, function (err) {
         if (err) {
-            console.log(JSON.stringify(err));
+            logger.error(JSON.stringify(err));
         } else {
-            console.log('All tables have been processed successfully');
+            logger.info('All tables have been processed successfully');
         }
     });
     res.send("finish");

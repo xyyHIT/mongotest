@@ -120,7 +120,7 @@ function connect_replicaSet_db() {
                 function (user_id, cb) {
                     logger.debug("user_id  ===>" + parseInt(user_id.user_id));
                     if (user_id) {
-                        col_tables.find({user_id:parseInt(user_id.user_id)},{limit:1, fields:{_id:1}}).sort({tb_createTime:-1}).toArray(function (err, docs) {
+                        col_tables.find({user_id:parseInt(user_id.user_id),tb_name:"云控数据中心数据-不要手工删除和修改!!!!!"},{limit:1, fields:{_id:1}}).sort({tb_createTime:-1}).toArray(function (err, docs) {
                             logger.debug("docs ===>" + JSON.stringify(docs));
                             if (docs && docs[0]._id == objId) {
                                 logger.debug(collectionName + " is DataCenterCollection ... ");

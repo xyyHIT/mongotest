@@ -87,7 +87,7 @@ function connect_shard_db() {
                 if (err) {
                     logger.error(collectionName + " dropUniqueIndex error ===>" + JSON.stringify(err));
                 } else {
-                    logger.error(collectionName + " dropUniqueIndex OK ===>");
+                    logger.info(collectionName + " dropUniqueIndex OK ===>");
                 }
                 cb({result: true});
             })

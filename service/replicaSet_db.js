@@ -122,7 +122,7 @@ function connect_replicaSet_db() {
                     if (user_id) {
                         col_tables.find({user_id:parseInt(user_id.user_id),tb_name:"云控数据中心数据-不要手工删除和修改!!!!!"},{limit:1, fields:{_id:1}}).sort({tb_createTime:-1}).toArray(function (err, docs) {
                             logger.debug("docs ===>" + JSON.stringify(docs));
-                            if (docs && docs[0]._id == objId) {
+                            if (docs && docs.length>0 && docs[0]._id == objId) {
                                 logger.debug(collectionName + " is DataCenterCollection ... ");
                                 check = true;
                             }

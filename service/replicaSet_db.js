@@ -118,9 +118,9 @@ function connect_replicaSet_db() {
                 },
                 // 查询是否是数据中心表
                 function (user_id, cb) {
-                    logger.debug("user_id  ===>" + user_id);
+                    logger.debug("user_id  ===>" + JSON.stringify(user_id));
                     if (user_id) {
-                        col_tables.findOne({user_id:user_id},{limit:1, fields:{_id:1}}).sort({tb_createTime:-1}).toArray(function (err, docs) {
+                        col_tables.find({user_id:user_id},{limit:1, fields:{_id:1}}).sort({tb_createTime:-1}).toArray(function (err, docs) {
                             if (docs && docs[0] == objId) {
                                 check = true;
                             }

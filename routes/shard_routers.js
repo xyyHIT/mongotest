@@ -61,7 +61,7 @@ exports.ensureSharding = function (req, res) {
             function (uniqueIndexList, cb) {
                 replicaSet_db.isDataCenterCollection(tableObj, function (result) {
                     if (!result.isCheck) {
-                        shard_db.dropUniqueIndex(uniqueIndexList, function (dropResult) {
+                        shard_db.dropUniqueIndex(uniqueIndexList, tableObj, function (dropResult) {
                             logger.debug(tableObj + " drop Index result ===>" + dropResult);
                             cb(null, 'shardIndex OK');
                         })

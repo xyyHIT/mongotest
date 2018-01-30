@@ -41,7 +41,7 @@ exports.ensureSharding = function (req, res) {
     var index = 0;
     var total = global.ALLTABLELENAMES.length;
     var beginTime = Date.now();
-    async.eachLimit(global.ALLTABLELENAMES, 100, function (tableObj, callback) {
+    async.eachLimit(global.ALLTABLELENAMES, 1, function (tableObj, callback) {
         index++;
         async.waterfall([
             // 从replicaSet获取原有表中的索引信息

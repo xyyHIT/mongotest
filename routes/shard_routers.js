@@ -57,7 +57,7 @@ exports.ensureSharding = function (req, res) {
                     cb(null, result.result);
                 })
             },
-            // 如果有唯一索引，查看是否是数据中心表，如果不是，删除该唯一索引
+            //如果有唯一索引，查看是否是数据中心表，如果不是，删除该唯一索引
             // function (uniqueIndexList, cb) {
             //     replicaSet_db.isDataCenterCollection(tableObj, function (result) {
             //         if (!result.isCheck) {
@@ -71,8 +71,14 @@ exports.ensureSharding = function (req, res) {
             //     })
             // },
             // 对表应用分片
-            function (shardIndex, cb) {
-                var command = { shardCollection : "TS_Cloud_DB."+tableObj,key : {_id:1}};
+            function (uniqueIndexList, cb) {
+                var command = { shardCollection : "TS_Cloud_DB."+tableObj};
+                // 如果有唯一索引，用唯一索引分片
+                if (uniqueIndexList && uniqueIndexList.length>0) {
+                    command["key"] =  uniqueIndexList[0];
+                } else {
+                    command["key"] =  {_id:1};
+                }
                 shard_db.adminRunCommand(command, function (result) {
                     cb(null, result.result);
                 });

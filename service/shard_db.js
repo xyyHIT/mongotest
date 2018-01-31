@@ -53,9 +53,8 @@ function connect_shard_db() {
                     var index_list = indexInfo.key;
                     var options = {};
                     if (indexInfo.unique) {
-                        // 判断是否是数据中心
-                        var index_unique = {_id: 1};
-                        index_list = JSON.parse((JSON.stringify(index_unique)+JSON.stringify(index_list)).replace(/}{/,','));
+                        // var index_unique = {_id: 1};
+                        // index_list = JSON.parse((JSON.stringify(index_list) + JSON.stringify(index_unique)).replace(/}{/,','));
                         options = {unique: true};
                         uniqueIndex.push(index_list);
                     }

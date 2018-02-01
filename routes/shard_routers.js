@@ -77,7 +77,7 @@ exports.ensureSharding = function (req, res) {
                 if (uniqueIndexList && uniqueIndexList.length>0) {
                     command["key"] =  uniqueIndexList[0];
                 } else {
-                    command["key"] =  {_id:1};
+                    command["key"] =  {_id: "hashed"};
                 }
                 shard_db.adminRunCommand(command, function (result) {
                     cb(null, result.result);

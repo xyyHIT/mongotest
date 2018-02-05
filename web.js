@@ -48,6 +48,7 @@ app.get('/test/getColNames', ShardRouter.getColNames);
 app.get('/test/checkCollection', ShardRouter.checkCollection);
 app.get('/test/ensureSharding', ShardRouter.ensureSharding);
 app.get('/test/shardCollections', ShardRouter.shardCollections);
+app.get('/test/shardCol', ShardRouter.shardCol);
 
 //app.post(/^\/mongodb\/(\S+)/, MongDB.index);
 

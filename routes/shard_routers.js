@@ -149,35 +149,43 @@ exports.shardCollections = function (req, res) {
     res.send("finish");
 };
 
-exports.changeRandomData = function (req, res) {
-    async.series([
-        function (callback) {
-            if (global.COLLECTIONS.length == 0) {
-                cloud_db.get_collection_doc_id('Table_6140_59c547da237cf172f9dc3a2a', function (ids) {
-                    if (ids) {
-                        global.COLLECTIONS = ids.result;
-                    }
-                    callback(null,global.COLLECTIONS.length);
-                });
-            } else {
-                callback(null,global.COLLECTIONS.length);
-            }
-        },
-        function (callback) {
-            var index = parseInt(Math.random()*global.COLLECTIONS.length);
-            var doc_id = global.COLLECTIONS[index]._id.toString();
-            cloud_db.change_random_data('Table_6140_59c547da237cf172f9dc3a2a',doc_id, function (result) {
-                if (result) {
-                    callback(null, result.record);
-                } else {
-                    callback(null, null);
-                }
+exports.shardCol = function (req, res) {
+    var colName = req.query.table;
+    async.waterfall([
+        // 从replicaSet获取原有表中的索引信息
+        function (cb) {
+            replicaSet_db.getTableIndexes(colName, function (indexList) {
+                logger.debug(colName + " index ===>" + JSON.stringify(indexList));
+                cb(null, indexList.result);
             })
-
+        },
+        // 设置shard 分片表信息
+        function (indexes, cb) {
+            shard_db.createShardIndex(colName, indexes, function (result) {
+                cb(null, result.result);
+            })
+        },
+        // 对表应用分片
+        function (uniqueIndexList, cb) {
+            var command = { shardCollection : "TS_Cloud_DB."+colName};
+            // 如果有唯一索引，用唯一索引分片
+            if (uniqueIndexList && uniqueIndexList.length>0) {
+                command["key"] =  uniqueIndexList[0];
+            } else {
+                command["key"] =  {_id: "hashed"};
+            }
+            shard_db.adminRunCommand(command, function (result) {
+                cb(null, result.result);
+            });
         }
     ], function (err, result) {
-        console.log('done ==>'+ result);
-        res.send(result);
+        if (err) {
+            logger.info("ensureSharding" + colName +" err==>"+JSON.stringify(err));
+            callback(null, 'ensureSharding Fail');
+        } else {
+            logger.info("ensureSharding" + colName + " Ok==>"+JSON.stringify(result));
+            callback(null, 'ensureSharding Ok');
+        }
     });
-
+    res.send(colName + " shard collection.");
 };

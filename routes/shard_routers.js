@@ -102,8 +102,8 @@ exports.ensureSharding = function (req, res) {
 
 exports.shardCollections = function (req, res) {
     var collections = [
-        {name: "Columns", shardKey:{tb_id:1,col_name:1}},
-        {name: "Tables", shardKey:{user_id:1,tb_name:1}},
+        {name: "Columns", shardKey:{tb_id:1}},
+        {name: "Tables", shardKey:{user_id:1}},
         {name: "DataView", shardKey:{user_id:1,tb_id:1}},
         {name: "DataRow", shardKey:{user_id:1,tb_id:1}},
         {name: "SpaceSize", shardKey:{user_id:1}},
